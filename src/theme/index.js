@@ -101,6 +101,18 @@ export default function ThemeConfig({ children }) {
         textTransform: "capitalize",
       },
     },
+    components: {
+      MuiCard: {
+        styleOverrides: {
+          root: { border: "1px solid #d0d0d08f", boxShadow: "none" },
+        },
+      },
+      MuiCardHeader: {
+        styleOverrides: {
+          root: { borderBottom: "1px solid #d0d0d08f" },
+        },
+      },
+    },
   };
 
   const theme = createTheme(themeOptions);

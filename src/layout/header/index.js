@@ -1,22 +1,12 @@
+import { useState } from "react";
 import { styled } from "@mui/material/styles";
-import {
-  Box,
-  Stack,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Button,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from "@mui/material";
+import { Box, Stack, AppBar, Toolbar, IconButton, Button } from "@mui/material";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+
 import AccountPopover from "./accountPopover";
-import { useState } from "react";
-import FormDialog from "../../components/dialog";
+import BookSession from "../../components/bookSession";
+import AddCounselor from "../../components/addCounselor";
 // import NotificationsPopover from "./NotificationsPopover";
 
 const NAV_WIDTH = 280;
@@ -42,9 +32,13 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 }));
 
 export default function Header({ onOpenNav }) {
-  const [openModal, setOpenModal] = useState(false);
-  const handleOpen = () => setOpenModal(true);
-  const handleClose = () => setOpenModal(false);
+  const [openSessionModal, setOpenSessionModal] = useState(false);
+  const [openCounselorModal, setOpenCounselorModal] = useState(false);
+
+  const handleOpenSession = () => setOpenSessionModal(true);
+  const handleOpenCounselor = () => setOpenCounselorModal(true);
+  const handleCloseSession = () => setOpenSessionModal(false);
+  const handleCloseCounselor = () => setOpenCounselorModal(false);
 
   return (
     <StyledRoot>
@@ -72,49 +66,27 @@ export default function Header({ onOpenNav }) {
         >
           {/* <NotificationsPopover /> */}
           <Button
-            onClick={handleOpen}
+            onClick={handleOpenCounselor}
+            variant="contained"
+            startIcon={<AddOutlinedIcon />}
+          >
+            Add a Counselor
+          </Button>
+          <Button
+            onClick={handleOpenSession}
             variant="contained"
             startIcon={<AddOutlinedIcon />}
           >
             Book a Session
           </Button>
-          <FormDialog formOpen={openModal} handleClose={handleClose}>
-            <FormControl fullWidth sx={{ mt: "1rem" }}>
-              <InputLabel id="counselor">Select a counselor</InputLabel>
-              <Select
-                labelId="counselor"
-                id="counselor"
-                label="select a counselor"
-              >
-                <MenuItem value="Sharon">Sharon</MenuItem>
-                <MenuItem value="John">John</MenuItem>
-                <MenuItem value="Ruth">Ruth</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl fullWidth sx={{ mt: "1rem" }}>
-              <InputLabel id="type">Type</InputLabel>
-              <Select labelId="type" id="type" label="type">
-                <MenuItem value="Online">Online</MenuItem>
-                <MenuItem value="Physical">Physical</MenuItem>
-              </Select>
-            </FormControl>
-            <TextField
-              sx={{ mt: "1rem" }}
-              id="type"
-              label="Date"
-              type="text"
-              fullWidth
-              variant="outlined"
-            />
-            <TextField
-              sx={{ mt: "1rem" }}
-              id="Time"
-              label="Time"
-              type="text"
-              fullWidth
-              variant="outlined"
-            />
-          </FormDialog>
+          <BookSession
+            openSessionModal={openSessionModal}
+            handleCloseSession={handleCloseSession}
+          />
+          <AddCounselor
+            openCounselorModal={openCounselorModal}
+            handleCloseCounselor={handleCloseCounselor}
+          />
           <AccountPopover />
         </Stack>
       </StyledToolbar>

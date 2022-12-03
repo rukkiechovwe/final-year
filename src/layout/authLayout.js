@@ -2,9 +2,9 @@ import * as React from "react";
 import { Box, Grid } from "@mui/material";
 import { Outlet } from "react-router-dom";
 
-import Logo from "../components/logo";
+import Logo from "../components/common/logo";
 import AuthBackground from "../assets/images/auth/AuthBackground";
-import AuthCard from "../components/authCard";
+import AuthCard from "../components/common/authCard";
 
 function AuthLayout({ children }) {
   return (

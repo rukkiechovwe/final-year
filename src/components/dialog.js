@@ -6,20 +6,25 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-export default function FormDialog({ children, formOpen, handleClose }) {
+export default function FormDialog({
+  children,
+  formOpen,
+  handleClose,
+  title,
+  desc,
+  submitText,
+}) {
   return (
     <div>
       <Dialog open={formOpen} onClose={handleClose}>
-        <DialogTitle>Book a session</DialogTitle>
+        <DialogTitle>{title}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Fill the form to book a session with a Counselor.
-          </DialogContentText>
+          <DialogContentText>{desc}</DialogContentText>
           {children}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Book Session</Button>
+          <Button onClick={handleClose}>{submitText}</Button>
         </DialogActions>
       </Dialog>
     </div>

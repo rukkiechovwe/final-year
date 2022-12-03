@@ -1,28 +1,34 @@
+import * as Yup from "yup";
+import { Formik } from "formik";
 import { useEffect, useState } from "react";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import {
-  Box,
-  Button,
   FormControl,
+  InputLabel,
+  Box,
+  FormControlLabel,
   FormHelperText,
   Grid,
   IconButton,
   InputAdornment,
-  InputLabel,
   OutlinedInput,
+  Radio,
+  RadioGroup,
   Stack,
   Typography,
 } from "@mui/material";
-import * as Yup from "yup";
-import { Formik } from "formik";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
+import FormDialog from "./dialog";
 import {
   strengthColor,
   strengthIndicator,
-} from "../../../utils/password-strength";
+} from "../utils/password-strength";
 
-const AuthRegister = () => {
+export default function AddCounselor({
+  openCounselorModal,
+  handleCloseCounselor,
+}) {
   const [level, setLevel] = useState();
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => {
@@ -41,16 +47,23 @@ const AuthRegister = () => {
   useEffect(() => {
     changePassword("");
   }, []);
-
   return (
-    <>
+    <FormDialog
+      formOpen={openCounselorModal}
+      handleClose={handleCloseCounselor}
+      title="Add a counselor"
+      desc=" Fill the form to add a Counselor."
+      submitText="Add Counselor"
+    >
       <Formik
         initialValues={{
           firstname: "",
           lastname: "",
           email: "",
-          company: "",
           password: "",
+          bio: "",
+          image: "",
+          gender: "",
           submit: null,
         }}
         validationSchema={Yup.object().shape({
@@ -130,28 +143,7 @@ const AuthRegister = () => {
                   )}
                 </Stack>
               </Grid>
-              <Grid item xs={12}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="company-signup">Company</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.company && errors.company)}
-                    id="company-signup"
-                    value={values.company}
-                    name="company"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Demo Inc."
-                    inputProps={{}}
-                  />
-                  {touched.company && errors.company && (
-                    <FormHelperText error id="helper-text-company-signup">
-                      {errors.company}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="email-signup">Email Address*</InputLabel>
                   <OutlinedInput
@@ -163,7 +155,7 @@ const AuthRegister = () => {
                     name="email"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="demo@company.com"
+                    placeholder="name@faculty.uniben.edu"
                     inputProps={{}}
                   />
                   {touched.email && errors.email && (
@@ -173,7 +165,7 @@ const AuthRegister = () => {
                   )}
                 </Stack>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="password-signup">Password</InputLabel>
                   <OutlinedInput
@@ -239,25 +231,30 @@ const AuthRegister = () => {
                   <FormHelperText error>{errors.submit}</FormHelperText>
                 </Grid>
               )}
+
               <Grid item xs={12}>
-                <Button
-                  disableElevation
-                  disabled={isSubmitting}
-                  fullWidth
-                  size="large"
-                  type="submit"
-                  variant="contained"
-                  color="primary"
+                <InputLabel htmlFor="bio">Gender</InputLabel>
+                <RadioGroup
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  defaultValue="female"
+                  name="radio-buttons-group"
                 >
-                  Create Account
-                </Button>
+                  <FormControlLabel
+                    value="female"
+                    control={<Radio />}
+                    label="Female"
+                  />
+                  <FormControlLabel
+                    value="male"
+                    control={<Radio />}
+                    label="Male"
+                  />
+                </RadioGroup>
               </Grid>
             </Grid>
           </form>
         )}
       </Formik>
-    </>
+    </FormDialog>
   );
-};
-
-export default AuthRegister;
+}

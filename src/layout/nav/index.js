@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { styled, alpha } from "@mui/material/styles";
 import { Box, Link, Drawer, Typography, Avatar } from "@mui/material";
 import useResponsive from "../../utils/hooks/useResponsive";
-import Logo from "../../components/logo";
+import Logo from "../../components/common/logo";
 import Scrollbar from "../../components/scrollbar";
 import NavSection from "../../components/nav-section";
 import navConfig from "./config";

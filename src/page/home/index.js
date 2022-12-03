@@ -1,6 +1,6 @@
 import React from "react";
 import { Grid, Container, Typography } from "@mui/material";
-import AppWidgetSummary from "../../components/appWidgetSummary";
+import AppWidgetSummary from "../../components/common/appSummary";
 
 const Home = () => {
   return (
@@ -13,16 +13,16 @@ const Home = () => {
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummary
-              title="Weekly Sales"
-              total={714000}
+              title="Students"
+              total={200}
               icon={"ant-design:android-filled"}
             />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummary
-              title="New Users"
-              total={1352831}
+              title="Counselors"
+              total={100}
               color="info"
               icon={"ant-design:apple-filled"}
             />
@@ -30,8 +30,8 @@ const Home = () => {
 
           <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummary
-              title="Item Orders"
-              total={1723315}
+              title="Upcoming Sessions"
+              total={10}
               color="warning"
               icon={"ant-design:windows-filled"}
             />
@@ -39,13 +39,17 @@ const Home = () => {
 
           <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummary
-              title="Bug Reports"
-              total={234}
+              title="Rejected Sessions"
+              total={5}
               color="error"
               icon={"ant-design:bug-filled"}
             />
           </Grid>
         </Grid>
+
+        <Typography variant="h4" sx={{ mb: 5 }}>
+          Upcoming Sessions
+        </Typography>
       </Container>
     </>
   );

@@ -1,14 +1,16 @@
 import { Typography } from "@mui/material";
 import React from "react";
+import SessionTable from "../../components/sessionTable";
 
-const Students = () => {
+const Sessions = () => {
   return (
     <>
       <Typography variant="h4" sx={{ mb: 5 }}>
-        Students
+        Sessions
       </Typography>
+      <SessionTable />
     </>
   );
 };
 
-export default Students;
+export default Sessions;

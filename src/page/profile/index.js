@@ -1,14 +1,16 @@
 import { Typography } from "@mui/material";
 import React from "react";
+import UpdateProfile from "./updateProfile";
 
-const Students = () => {
+const Profile = () => {
   return (
     <>
       <Typography variant="h4" sx={{ mb: 5 }}>
-        Students
+        Profile
       </Typography>
+      <UpdateProfile />
     </>
   );
 };
 
-export default Students;
+export default Profile;

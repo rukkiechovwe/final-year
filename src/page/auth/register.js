@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Grid, Stack, Typography } from "@mui/material";
-import AuthRegister from "./auth-forms/authRegister";
+import AuthRegister from "./forms/authRegister";
 
 const Register = () => (
   <Grid container spacing={3}>

@@ -7,7 +7,11 @@ import Home from "../page/home/index";
 import Login from "../page/auth/login";
 import Register from "../page/auth/register";
 import DashboardLayout from "../layout/dashboardLayout";
-import Appointment from "../page/appointments";
+import Sessions from "../page/sessions";
+import Counselors from "../page/couselors";
+import Profile from "../page/profile";
+import Details from "../page/details";
+import SessionDetails from "../page/details/sessionDetails";
 
 // const Loadable = (props, {Component}) => {
 //   return (
@@ -24,7 +28,11 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { path: "/", element: <Home /> },
-        { path: "sessions", element: <Appointment /> },
+        { path: "sessions", element: <Sessions /> },
+        { path: "counselor", element: <Counselors /> },
+        { path: "profile", element: <Profile /> },
+        { path: "details", element: <Details /> },
+        { path: "/session-details", element: <SessionDetails /> },
       ],
     },
     {

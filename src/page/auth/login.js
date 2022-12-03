@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Grid, Stack, Typography } from "@mui/material";
 
-import AuthLogin from "./auth-forms/authLogin";
+import AuthLogin from "./forms/authLogin";
 
 const Login = () => {
   return (
