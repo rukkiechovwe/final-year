@@ -1,4 +1,9 @@
 import { useEffect, useState } from "react";
+import * as Yup from "yup";
+import { Formik } from "formik";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+
 import {
   Box,
   Button,
@@ -12,11 +17,9 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import * as Yup from "yup";
-import { Formik } from "formik";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
-
+import { auth, db } from "../../../firebase";
 import {
   strengthColor,
   strengthIndicator,
@@ -32,7 +35,30 @@ const AuthRegister = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  const handleSubmit = (values, setErrors, setStatus, setSubmitting) => {
+    createUserWithEmailAndPassword(auth, values.email, values.password)
+      .then(async (userCredential) => {
+        setSubmitting(false);
+        setStatus({ success: true });
+        const user = userCredential.user;
+        console.log(user);
 
+        // add user to firestore
+        const studentData = {
+          name: `${values.firstname} ${values.lastname}`,
+          email: values.email,
+          department: values.department,
+          annonymous_stat: false,
+          gender: "",
+        };
+        await setDoc(doc(db, "students", values.email), studentData);
+      })
+      .catch((error) => {
+        setSubmitting(false);
+        setStatus({ success: false });
+        setErrors({ submit: error.message });
+      });
+  };
   const changePassword = (value) => {
     const temp = strengthIndicator(value);
     setLevel(strengthColor(temp));
@@ -63,15 +89,7 @@ const AuthRegister = () => {
           password: Yup.string().max(255).required("Password is required"),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-          try {
-            setStatus({ success: false });
-            setSubmitting(false);
-          } catch (err) {
-            console.error(err);
-            setStatus({ success: false });
-            setErrors({ submit: err.message });
-            setSubmitting(false);
-          }
+          handleSubmit(values, setErrors, setStatus, setSubmitting);
         }}
       >
         {({

@@ -1,4 +1,4 @@
-import { Avatar, Grid, Stack, Typography } from "@mui/material";
+import { Grid, Stack, Typography } from "@mui/material";
 import * as React from "react";
 import Detail from "../../components/details";
 import Dot from "../../components/common/dot";

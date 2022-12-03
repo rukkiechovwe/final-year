@@ -1,0 +1,17 @@
+____TODO____
++ Auth Gaurd
++ Book Session
++ Create Counselor
++ View Session
++ Update Profile
++ View Counselor
++ View Students
+
+
+____DONE____
++ Template of the system
++ Sign Up
++ Log in
+
+
+____BUGS____

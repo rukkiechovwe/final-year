@@ -1,4 +1,7 @@
 import React from "react";
+import * as Yup from "yup";
+import { Formik } from "formik";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import {
   Button,
   FormHelperText,
@@ -9,19 +12,32 @@ import {
   OutlinedInput,
   Stack,
 } from "@mui/material";
-import * as Yup from "yup";
-import { Formik } from "formik";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+import { auth } from "../../../firebase";
 
 const AuthLogin = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
-
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
+  };
+
+  const handleSubmit = (values, setErrors, setStatus, setSubmitting) => {
+    signInWithEmailAndPassword(auth, values.email, values.password)
+      .then((userCredential) => {
+        setSubmitting(false);
+        setStatus({ success: true });
+        const user = userCredential.user;
+        console.log(user);
+      })
+      .catch((error) => {
+        setSubmitting(false);
+        setStatus({ success: false });
+        setErrors({ submit: error.message });
+      });
   };
 
   return (
@@ -40,14 +56,7 @@ const AuthLogin = () => {
           password: Yup.string().max(255).required("Password is required"),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-          try {
-            setStatus({ success: false });
-            setSubmitting(false);
-          } catch (err) {
-            setStatus({ success: false });
-            setErrors({ submit: err.message });
-            setSubmitting(false);
-          }
+          handleSubmit(values, setErrors, setStatus, setSubmitting);
         }}
       >
         {({
@@ -134,7 +143,6 @@ const AuthLogin = () => {
               )}
               <Grid item xs={12}>
                 <Button
-                  disableElevation
                   disabled={isSubmitting}
                   fullWidth
                   size="large"
