@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -26,6 +27,7 @@ import {
 } from "../../../utils/password-strength";
 
 const AuthRegister = () => {
+  const navigate = useNavigate();
   const [level, setLevel] = useState();
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => {
@@ -50,10 +52,17 @@ const AuthRegister = () => {
           department: values.department,
           annonymous_stat: false,
           gender: "",
+          id: user.uid,
+          role: 3,
         };
-        await setDoc(doc(db, "students", values.email), studentData);
+        await setDoc(doc(db, "users", user.uid), studentData);
+
+        //   navigate to login page
+        navigate("/login");
       })
+
       .catch((error) => {
+        console.log(error);
         setSubmitting(false);
         setStatus({ success: false });
         setErrors({ submit: error.message });

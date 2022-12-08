@@ -12,6 +12,7 @@ import Counselors from "../page/couselors";
 import Profile from "../page/profile";
 import Details from "../page/details";
 import SessionDetails from "../page/details/sessionDetails";
+import AuthGuard from "./authGaurd";
 
 // const Loadable = (props, {Component}) => {
 //   return (
@@ -25,7 +26,11 @@ export default function Router() {
   return useRoutes([
     {
       path: "/",
-      element: <DashboardLayout />,
+      element: (
+        <AuthGuard>
+          <DashboardLayout />
+        </AuthGuard>
+      ),
       children: [
         { path: "/", element: <Home /> },
         { path: "sessions", element: <Sessions /> },

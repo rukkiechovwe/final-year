@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -15,8 +16,10 @@ import {
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import { auth } from "../../../firebase";
+import useAuth from "../../../utils/hooks/useAuth";
 
 const AuthLogin = () => {
+  const { getUser } = useAuth();
   const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -31,7 +34,11 @@ const AuthLogin = () => {
         setSubmitting(false);
         setStatus({ success: true });
         const user = userCredential.user;
-        console.log(user);
+        localStorage.setItem("token", user.uid);
+
+        //   navigate to home page
+        getUser(user.uid);
+      
       })
       .catch((error) => {
         setSubmitting(false);
@@ -44,8 +51,8 @@ const AuthLogin = () => {
     <>
       <Formik
         initialValues={{
-          email: "info@codedthemes.com",
-          password: "123456",
+          email: "",
+          password: "",
           submit: null,
         }}
         validationSchema={Yup.object().shape({

@@ -9,8 +9,10 @@ import {
   IconButton,
   Popover,
 } from "@mui/material";
+import useAuth from "../../utils/hooks/useAuth";
 
 export default function AccountPopover() {
+    const { logout } = useAuth();
   const [open, setOpen] = useState(null);
 
   const handleOpen = (event) => {
@@ -75,7 +77,7 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: "dashed" }} />
 
-        <MenuItem onClick={handleClose} sx={{ m: 1 }}>
+        <MenuItem onClick={logout()} sx={{ m: 1 }}>
           Logout
         </MenuItem>
       </Popover>
