@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Typography, Grid } from "@mui/material";
 import CounselorSummary from "../../components/common/counselorSummary";
 
 const AdminCounselors = () => {
+  const [counselors, setCounselors] = useState([]);
+  useEffect(() => {
+    // fetch counselors
+    
+  }, []);
   return (
     <>
       <Typography variant="h4" sx={{ mb: 5 }}>

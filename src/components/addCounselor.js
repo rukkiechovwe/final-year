@@ -1,6 +1,8 @@
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import {
@@ -17,13 +19,12 @@ import {
   RadioGroup,
   Stack,
   Typography,
+  Button,
 } from "@mui/material";
 
 import FormDialog from "./dialog";
-import {
-  strengthColor,
-  strengthIndicator,
-} from "../utils/password-strength";
+import { strengthColor, strengthIndicator } from "../utils/password-strength";
+import { auth, db } from "../firebase";
 
 export default function AddCounselor({
   openCounselorModal,
@@ -48,54 +49,71 @@ export default function AddCounselor({
     changePassword("");
   }, []);
   return (
-    <FormDialog
-      formOpen={openCounselorModal}
-      handleClose={handleCloseCounselor}
-      title="Add a counselor"
-      desc=" Fill the form to add a Counselor."
-      submitText="Add Counselor"
-    >
-      <Formik
-        initialValues={{
-          firstname: "",
-          lastname: "",
-          email: "",
-          password: "",
-          bio: "",
-          image: "",
-          gender: "",
-          submit: null,
-        }}
-        validationSchema={Yup.object().shape({
-          firstname: Yup.string().max(255).required("First Name is required"),
-          lastname: Yup.string().max(255).required("Last Name is required"),
-          email: Yup.string()
-            .email("Must be a valid email")
-            .max(255)
-            .required("Email is required"),
-          password: Yup.string().max(255).required("Password is required"),
-        })}
-        onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-          try {
-            setStatus({ success: false });
-            setSubmitting(false);
-          } catch (err) {
+    <Formik
+      initialValues={{
+        firstname: "",
+        lastname: "",
+        email: "",
+        password: "",
+        bio: "",
+        image: "",
+        gender: "",
+        submit: null,
+      }}
+      validationSchema={Yup.object().shape({
+        firstname: Yup.string().max(255).required("First Name is required"),
+        lastname: Yup.string().max(255).required("Last Name is required"),
+        email: Yup.string()
+          .email("Must be a valid email")
+          .max(255)
+          .required("Email is required"),
+        password: Yup.string().max(255).required("Password is required"),
+      })}
+      onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+        console.log(values);
+        createUserWithEmailAndPassword(auth, values.email, values.password)
+          .then(async (userCredential) => {
+            setSubmitting(true);
+            const user = userCredential.user;
+            console.log(user);
+
+            // add user to firestore
+            const counselorData = {
+              name: `${values.firstname} ${values.lastname}`,
+              email: values.email,
+              bio: "",
+              image: "",
+              gender: "",
+              id: user.uid,
+              role: 2,
+            };
+            await setDoc(doc(db, "users", user.uid), counselorData);
+            setStatus({ success: true });
+            handleCloseCounselor();
+          })
+          .catch((err) => {
             console.error(err);
             setStatus({ success: false });
             setErrors({ submit: err.message });
             setSubmitting(false);
-          }
-        }}
-      >
-        {({
-          errors,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-          touched,
-          values,
-        }) => (
+          });
+      }}
+    >
+      {({
+        errors,
+        handleBlur,
+        handleChange,
+        handleSubmit,
+        isSubmitting,
+        touched,
+        values,
+      }) => (
+        <FormDialog
+          formOpen={openCounselorModal}
+          handleClose={handleCloseCounselor}
+          title="Add a counselor"
+          desc=" Fill the form to add a Counselor."
+        >
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={12} lg={6}>
@@ -239,22 +257,37 @@ export default function AddCounselor({
                   defaultValue="female"
                   name="radio-buttons-group"
                 >
-                  <FormControlLabel
-                    value="female"
-                    control={<Radio />}
-                    label="Female"
-                  />
-                  <FormControlLabel
-                    value="male"
-                    control={<Radio />}
-                    label="Male"
-                  />
+                  <Stack direction="row">
+                    <FormControlLabel
+                      value="female"
+                      control={<Radio />}
+                      label="Female"
+                    />
+                    <FormControlLabel
+                      value="male"
+                      control={<Radio />}
+                      label="Male"
+                    />
+                  </Stack>
                 </RadioGroup>
               </Grid>
             </Grid>
+            <Grid item xs={12} mt={3}>
+              <Button
+                disableElevation
+                disabled={isSubmitting}
+                fullWidth
+                size="large"
+                type="submit"
+                variant="contained"
+                color="primary"
+              >
+                Add Counselor
+              </Button>
+            </Grid>
           </form>
-        )}
-      </Formik>
-    </FormDialog>
+        </FormDialog>
+      )}
+    </Formik>
   );
 }

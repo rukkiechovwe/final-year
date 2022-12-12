@@ -63,7 +63,7 @@ export const reducer = (state, action) => {
 function UserContextProvider({ children }) {
   const navigate = useNavigate();
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [user, setUser] = useState([]);
+  // const [user, setUser] = useState([]);
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -96,7 +96,7 @@ function UserContextProvider({ children }) {
     if (docSnap.exists()) {
       const userData = docSnap.data();
       if (userData !== null) {
-        setUser(docSnap.data());
+        // setUser(docSnap.data());
         console.log(
           `==> [tracking events for user with id] :==> ${userData.id} <==`
         );

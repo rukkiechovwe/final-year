@@ -43,7 +43,7 @@ import AdminSessionDetails from "../page/admin/sessionDetails";
 
 export default function Router() {
   const { user } = useAuth();
-  const routes = getRouteBasedOnUserRole(3);
+  const routes = getRouteBasedOnUserRole(user?.role);
   routes.push({
     path: "/",
     element: <AuthLayout />,
@@ -55,10 +55,6 @@ export default function Router() {
 
   return useRoutes(routes);
 }
-
-// const Home = Loadable(lazy(() => import('../page/home/index')));
-// const Login = Loadable(lazy(() => import('../page/auth/student/login')));
-// const Register = Loadable(lazy(() => import('../page/auth/student/register')));
 
 const getRouteBasedOnUserRole = (userRole) => {
   let route = [];

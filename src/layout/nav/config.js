@@ -5,37 +5,37 @@ const navConfig = [
   {
     title: "dashboard",
     path: "/",
-    role: 0,
+    role: [1, 2, 3],
     icon: <DashboardIcon />,
   },
   {
     title: "sessions",
     path: "/sessions",
-    role: 0,
+    role: [1, 2, 3],
     icon: <CheckBoxOutlinedIcon />,
   },
   {
     title: "counselor",
     path: "/counselor",
-    role: 1,
+    role: [1],
     icon: <CheckBoxOutlinedIcon />,
   },
   {
     title: "profile",
     path: "/profile",
-    role: 3, //role:2 and 3
+    role: [2, 3],
     icon: <CheckBoxOutlinedIcon />,
   },
   {
     title: "details",
     path: "/counselor-details",
-    role: 1,
+    role: [1],
     icon: <CheckBoxOutlinedIcon />,
   },
   {
     title: "session details",
     path: "/session-details",
-    role: 0,
+    role: [1, 2, 3],
     icon: <CheckBoxOutlinedIcon />,
   },
 ];

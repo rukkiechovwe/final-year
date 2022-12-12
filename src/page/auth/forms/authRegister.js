@@ -4,7 +4,8 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import {
   Box,
   Button,
@@ -17,9 +18,11 @@ import {
   OutlinedInput,
   Stack,
   Typography,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
 } from "@mui/material";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+
 import { auth, db } from "../../../firebase";
 import {
   strengthColor,
@@ -40,8 +43,7 @@ const AuthRegister = () => {
   const handleSubmit = (values, setErrors, setStatus, setSubmitting) => {
     createUserWithEmailAndPassword(auth, values.email, values.password)
       .then(async (userCredential) => {
-        setSubmitting(false);
-        setStatus({ success: true });
+        setSubmitting(true);
         const user = userCredential.user;
         console.log(user);
 
@@ -56,6 +58,7 @@ const AuthRegister = () => {
           role: 3,
         };
         await setDoc(doc(db, "users", user.uid), studentData);
+        setStatus({ success: true });
 
         //   navigate to login page
         navigate("/login");
@@ -262,6 +265,25 @@ const AuthRegister = () => {
                     </Grid>
                   </Grid>
                 </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <InputLabel htmlFor="bio">Gender</InputLabel>
+                <RadioGroup
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  defaultValue="female"
+                  name="radio-buttons-group"
+                >
+                  <FormControlLabel
+                    value="female"
+                    control={<Radio />}
+                    label="Female"
+                  />
+                  <FormControlLabel
+                    value="male"
+                    control={<Radio />}
+                    label="Male"
+                  />
+                </RadioGroup>
               </Grid>
               {errors.submit && (
                 <Grid item xs={12}>

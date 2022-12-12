@@ -21,7 +21,7 @@ function NavItem({ item }) {
 
   return (
     <>
-      {user?.role === role || role === 0 ? (
+      {role.includes(user?.role) ? (
         <StyledNavItem
           component={RouterLink}
           to={path}
@@ -40,7 +40,7 @@ function NavItem({ item }) {
           {info && info}
         </StyledNavItem>
       ) : (
-        ""
+        <div />
       )}
     </>
   );

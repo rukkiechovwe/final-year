@@ -1,10 +1,9 @@
 ____TODO____
-+ Add Counselor
 + Update Counselor Profile
 + View Counselor
++ View Students
 + Book Session
 + View Session
-+ View Students
 
 
 ____DONE____
@@ -13,7 +12,7 @@ ____DONE____
 + Log in
 + Auth Gaurd
 + Update Student Profile
-
++ Add Counselor
 
 
 ____BUGS____
