@@ -3,7 +3,6 @@
 import { useRoutes } from "react-router-dom";
 
 // layouts
-import useAuth from "../utils/hooks/useAuth";
 import AuthGuard from "./authGaurd";
 import DashboardLayout from "../layout/dashboardLayout";
 import AuthLayout from "../layout/authLayout";
@@ -32,6 +31,10 @@ import AdminSessions from "../page/admin/sessions";
 import AdminCounselors from "../page/admin/counselors";
 import AdminCounselorDetails from "../page/admin/counselorDetails";
 import AdminSessionDetails from "../page/admin/sessionDetails";
+
+// OTHERS
+import useAuth from "../utils/hooks/useAuth";
+import AdminContextProvider from "../context/adminContext";
 
 // const Loadable = (props, {Component}) => {
 //   return (
@@ -64,7 +67,9 @@ const getRouteBasedOnUserRole = (userRole) => {
         path: "/",
         element: (
           <AuthGuard>
-            <DashboardLayout />
+            <AdminContextProvider>
+              <DashboardLayout />
+            </AdminContextProvider>
           </AuthGuard>
         ),
         children: [

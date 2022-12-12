@@ -256,6 +256,7 @@ export default function AddCounselor({
                   aria-labelledby="demo-radio-buttons-group-label"
                   defaultValue="female"
                   name="radio-buttons-group"
+                  onChange={handleChange}
                 >
                   <Stack direction="row">
                     <FormControlLabel

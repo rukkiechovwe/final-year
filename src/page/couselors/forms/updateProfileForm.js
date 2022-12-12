@@ -1,5 +1,8 @@
 import * as Yup from "yup";
 import { Formik } from "formik";
+import { doc, updateDoc } from "firebase/firestore";
+import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
+
 import {
   Button,
   FormHelperText,
@@ -9,39 +12,46 @@ import {
   Stack,
   TextareaAutosize,
 } from "@mui/material";
+import useAuth from "../../../utils/hooks/useAuth";
+import { db, storage } from "../../../firebase";
 
 const UpdateProfileForm = () => {
+  const { user } = useAuth();
+
   return (
     <Formik
       initialValues={{
-        firstname: "",
-        lastname: "",
-        email: "",
-        password: "",
         bio: "",
-        image: "",
-        gender: "",
+        file: "",
         submit: null,
       }}
       validationSchema={Yup.object().shape({
-        firstname: Yup.string().max(255).required("First Name is required"),
-        lastname: Yup.string().max(255).required("Last Name is required"),
-        email: Yup.string()
-          .email("Must be a valid email")
+        file: Yup.string().max(255).required("Image is required"),
+        bio: Yup.string()
           .max(255)
-          .required("Email is required"),
-        password: Yup.string().max(255).required("Password is required"),
+          .required("A short bio of yourself is required"),
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-        try {
-          setStatus({ success: false });
-          setSubmitting(false);
-        } catch (err) {
-          console.error(err);
-          setStatus({ success: false });
-          setErrors({ submit: err.message });
-          setSubmitting(false);
-        }
+        setSubmitting(true);
+        const storageRef = ref(storage, `images/${user.name}`);
+        uploadBytes(storageRef, values.file)
+          .then((_) => {
+            console.log("uploaded");
+            getDownloadURL(ref(storage, storageRef)).then(async (url) => {
+              // update firestore with counselors data
+              const counselor = doc(db, "users", user?.id);
+              await updateDoc(counselor, {
+                bio: values.bio,
+                file: url,
+              });
+              setStatus({ success: true });
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+            setStatus({ success: false });
+            setErrors({ submit: err.message });
+          });
       }}
     >
       {({
@@ -52,72 +62,47 @@ const UpdateProfileForm = () => {
         isSubmitting,
         touched,
         values,
+        setFieldValue,
       }) => (
         <form noValidate onSubmit={handleSubmit}>
           <Grid container spacing={3}>
-            <Grid item xs={12} lg={6}>
+            <Grid item xs={6}>
               <Stack spacing={1}>
-                <InputLabel htmlFor="firstname-signup">First Name*</InputLabel>
+                <InputLabel htmlFor="fullname-profile">Full Name*</InputLabel>
                 <OutlinedInput
-                  id="firstname-login"
-                  type="firstname"
-                  value={values.firstname}
-                  name="firstname"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  placeholder="John"
+                  id="fullname-profile"
+                  type="fullname"
+                  value={user.name}
+                  name="fullname"
+                  placeholder="John Doe"
                   fullWidth
-                  error={Boolean(touched.firstname && errors.firstname)}
                 />
-                {touched.firstname && errors.firstname && (
-                  <FormHelperText error id="helper-text-firstname-signup">
-                    {errors.firstname}
-                  </FormHelperText>
-                )}
-              </Stack>
-            </Grid>
-            <Grid item xs={12} lg={6}>
-              <Stack spacing={1}>
-                <InputLabel htmlFor="lastname-signup">Last Name*</InputLabel>
-                <OutlinedInput
-                  fullWidth
-                  error={Boolean(touched.lastname && errors.lastname)}
-                  id="lastname-signup"
-                  type="lastname"
-                  value={values.lastname}
-                  name="lastname"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  placeholder="Doe"
-                  inputProps={{}}
-                />
-                {touched.lastname && errors.lastname && (
-                  <FormHelperText error id="helper-text-lastname-signup">
-                    {errors.lastname}
-                  </FormHelperText>
-                )}
               </Stack>
             </Grid>
             <Grid item xs={6}>
               <Stack spacing={1}>
-                <InputLabel htmlFor="email-signup">Email Address*</InputLabel>
+                <InputLabel htmlFor="email-profile">Email Address*</InputLabel>
                 <OutlinedInput
-                  fullWidth
-                  error={Boolean(touched.email && errors.email)}
-                  id="email-login"
+                  id="email-profile"
                   type="email"
-                  value={values.email}
+                  value={user.email}
                   name="email"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  placeholder="name@faculty.uniben.edu"
-                  inputProps={{}}
+                  placeholder="counselor@gmail.com"
+                  fullWidth
                 />
-                {touched.email && errors.email && (
-                  <FormHelperText error id="helper-text-email-signup">
-                    {errors.email}
-                  </FormHelperText>
-                )}
+              </Stack>
+            </Grid>
+            <Grid item xs={6}>
+              <Stack spacing={1}>
+                <InputLabel htmlFor="gender-profile">Gender</InputLabel>
+                <OutlinedInput
+                  id="gender-profile"
+                  type="gender"
+                  value={user.gender}
+                  name="gender"
+                  placeholder="Male"
+                  fullWidth
+                />
               </Stack>
             </Grid>
             <Grid item xs={6}>
@@ -131,15 +116,18 @@ const UpdateProfileForm = () => {
                     value={values.image}
                     name="image"
                     onBlur={handleBlur}
-                    onChange={handleChange}
                     type="file"
                     hidden
+                    onChange={(event) => {
+                      console.log(event.currentTarget.files[0]);
+                      setFieldValue("file", event.currentTarget.files[0]);
+                    }}
                   />
                 </Button>
 
-                {touched.image && errors.image && (
+                {touched.file && errors.file && (
                   <FormHelperText error id="helper-text-image-signup">
-                    {errors.image}
+                    {errors.file}
                   </FormHelperText>
                 )}
               </Stack>

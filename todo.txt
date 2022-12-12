@@ -1,6 +1,4 @@
 ____TODO____
-+ Update Counselor Profile
-+ View Counselor
 + View Students
 + Book Session
 + View Session
@@ -13,6 +11,8 @@ ____DONE____
 + Auth Gaurd
 + Update Student Profile
 + Add Counselor
++ Update Counselor Profile
++ View Counselor
 
 
 ____BUGS____
