@@ -1,18 +1,37 @@
 // import { Suspense, lazy } from "react";
-import { useRoutes } from "react-router-dom";
 // import LoadingScreen from '../components/LoadingScreen';
+import { useRoutes } from "react-router-dom";
+
+// layouts
+import useAuth from "../utils/hooks/useAuth";
+import AuthGuard from "./authGaurd";
+import DashboardLayout from "../layout/dashboardLayout";
 import AuthLayout from "../layout/authLayout";
 
-import Home from "../page/home/index";
+// auth pages
 import Login from "../page/auth/login";
 import Register from "../page/auth/register";
-import DashboardLayout from "../layout/dashboardLayout";
-import Sessions from "../page/sessions";
-import Counselors from "../page/couselors";
-import Profile from "../page/profile";
-import Details from "../page/details";
-import SessionDetails from "../page/details/sessionDetails";
-import AuthGuard from "./authGaurd";
+
+// student pages
+import StudentHome from "../page/students";
+import StudentSessions from "../page/students/sessions";
+import StudentSessionDetails from "../page/students/sessionDetails";
+import StudentProfile from "../page/students/profile";
+
+import Home from "../page/home/index";
+
+// counselor pages
+import CounselorSessions from "../page/couselors/sessions";
+import CounselorHome from "../page/couselors";
+import CounselorProfile from "../page/couselors/profile";
+import CounselorSessionDetails from "../page/couselors/sessionDetails";
+
+// admin pages
+import AdminHome from "../page/admin";
+import AdminSessions from "../page/admin/sessions";
+import AdminCounselors from "../page/admin/counselors";
+import AdminCounselorDetails from "../page/admin/counselorDetails";
+import AdminSessionDetails from "../page/admin/sessionDetails";
 
 // const Loadable = (props, {Component}) => {
 //   return (
@@ -23,34 +42,89 @@ import AuthGuard from "./authGaurd";
 // };
 
 export default function Router() {
-  return useRoutes([
-    {
-      path: "/",
-      element: (
-        <AuthGuard>
-          <DashboardLayout />
-        </AuthGuard>
-      ),
-      children: [
-        { path: "/", element: <Home /> },
-        { path: "sessions", element: <Sessions /> },
-        { path: "counselor", element: <Counselors /> },
-        { path: "profile", element: <Profile /> },
-        { path: "details", element: <Details /> },
-        { path: "/session-details", element: <SessionDetails /> },
-      ],
-    },
-    {
-      path: "/",
-      element: <AuthLayout />,
-      children: [
-        { path: "login", element: <Login /> },
-        { path: "register", element: <Register /> },
-      ],
-    },
-  ]);
+  const { user } = useAuth();
+  const routes = getRouteBasedOnUserRole(3);
+  routes.push({
+    path: "/",
+    element: <AuthLayout />,
+    children: [
+      { path: "login", element: <Login /> },
+      { path: "register", element: <Register /> },
+    ],
+  });
+
+  return useRoutes(routes);
 }
 
 // const Home = Loadable(lazy(() => import('../page/home/index')));
 // const Login = Loadable(lazy(() => import('../page/auth/student/login')));
 // const Register = Loadable(lazy(() => import('../page/auth/student/register')));
+
+const getRouteBasedOnUserRole = (userRole) => {
+  let route = [];
+  switch (userRole) {
+    case 1:
+      route.push({
+        path: "/",
+        element: (
+          <AuthGuard>
+            <DashboardLayout />
+          </AuthGuard>
+        ),
+        children: [
+          { path: "/", element: <AdminHome /> },
+          { path: "sessions", element: <AdminSessions /> },
+          { path: "counselor", element: <AdminCounselors /> },
+          { path: "counselor-details", element: <AdminCounselorDetails /> },
+          { path: "session-details", element: <AdminSessionDetails /> },
+        ],
+      });
+      break;
+    case 2:
+      route.push({
+        path: "/",
+        element: (
+          <AuthGuard>
+            <DashboardLayout />
+          </AuthGuard>
+        ),
+        children: [
+          { path: "/", element: <CounselorHome /> },
+          { path: "sessions", element: <CounselorSessions /> },
+          { path: "profile", element: <CounselorProfile /> },
+          { path: "session-details", element: <CounselorSessionDetails /> },
+        ],
+      });
+      break;
+    case 3:
+      route.push({
+        path: "/",
+        element: (
+          <AuthGuard>
+            <DashboardLayout />
+          </AuthGuard>
+        ),
+        children: [
+          { path: "/", element: <StudentHome /> },
+          { path: "sessions", element: <StudentSessions /> },
+          { path: "profile", element: <StudentProfile /> },
+          { path: "session-details", element: <StudentSessionDetails /> },
+        ],
+      });
+      break;
+
+    default:
+      route.push({
+        path: "/",
+        element: (
+          <AuthGuard>
+            <DashboardLayout />
+          </AuthGuard>
+        ),
+        children: [{ path: "/", element: <Home /> }],
+      });
+    // return 404 route
+  }
+
+  return route;
+};

@@ -15,7 +15,6 @@ const initialState = {
   loading: false,
   error: "",
   email: "",
-  userRole: 0,
 };
 const handlers = {
   INITIALIZE: "INITIALIZE",
@@ -91,7 +90,7 @@ function UserContextProvider({ children }) {
   };
 
   const getUser = async (id) => {
-    const docRef = doc(db, "users", userId);
+    const docRef = doc(db, "users", id);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
@@ -110,7 +109,6 @@ function UserContextProvider({ children }) {
             isInitialized: true,
             isAuthenticated: true,
             user: userData,
-            userRole: userData.role,
           },
         });
         navigate("/");

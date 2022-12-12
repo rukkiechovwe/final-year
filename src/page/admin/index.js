@@ -2,7 +2,7 @@ import React from "react";
 import { Grid, Container, Typography } from "@mui/material";
 import AppWidgetSummary from "../../components/common/appSummary";
 
-const CounselorHome = () => {
+const AdminHome = () => {
   return (
     <>
       <Container maxWidth="xl">
@@ -55,4 +55,4 @@ const CounselorHome = () => {
   );
 };
 
-export default CounselorHome;
+export default AdminHome;

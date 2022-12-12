@@ -1,10 +1,9 @@
 ____TODO____
-+ Auth Gaurd
-+ Book Session
-+ Create Counselor
-+ View Session
-+ Update Profile
++ Add Counselor
++ Update Counselor Profile
 + View Counselor
++ Book Session
++ View Session
 + View Students
 
 
@@ -12,6 +11,9 @@ ____DONE____
 + Template of the system
 + Sign Up
 + Log in
++ Auth Gaurd
++ Update Student Profile
+
 
 
 ____BUGS____

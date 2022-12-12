@@ -7,6 +7,7 @@ import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import AccountPopover from "./accountPopover";
 import BookSession from "../../components/bookSession";
 import AddCounselor from "../../components/addCounselor";
+import useAuth from "../../utils/hooks/useAuth";
 // import NotificationsPopover from "./NotificationsPopover";
 
 const NAV_WIDTH = 280;
@@ -32,6 +33,7 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 }));
 
 export default function Header({ onOpenNav }) {
+  const { user } = useAuth();
   const [openSessionModal, setOpenSessionModal] = useState(false);
   const [openCounselorModal, setOpenCounselorModal] = useState(false);
 
@@ -65,28 +67,37 @@ export default function Header({ onOpenNav }) {
           }}
         >
           {/* <NotificationsPopover /> */}
-          <Button
-            onClick={handleOpenCounselor}
-            variant="contained"
-            startIcon={<AddOutlinedIcon />}
-          >
-            Add a Counselor
-          </Button>
-          <Button
-            onClick={handleOpenSession}
-            variant="contained"
-            startIcon={<AddOutlinedIcon />}
-          >
-            Book a Session
-          </Button>
-          <BookSession
-            openSessionModal={openSessionModal}
-            handleCloseSession={handleCloseSession}
-          />
-          <AddCounselor
-            openCounselorModal={openCounselorModal}
-            handleCloseCounselor={handleCloseCounselor}
-          />
+          {user?.role === 1 && (
+            <>
+              <Button
+                onClick={handleOpenCounselor}
+                variant="contained"
+                startIcon={<AddOutlinedIcon />}
+              >
+                Add a Counselor
+              </Button>
+              <AddCounselor
+                openCounselorModal={openCounselorModal}
+                handleCloseCounselor={handleCloseCounselor}
+              />
+            </>
+          )}
+          {user?.role === 3 && (
+            <>
+              <Button
+                onClick={handleOpenSession}
+                variant="contained"
+                startIcon={<AddOutlinedIcon />}
+              >
+                Book a Session
+              </Button>
+              <BookSession
+                openSessionModal={openSessionModal}
+                handleCloseSession={handleCloseSession}
+              />
+            </>
+          )}
+
           <AccountPopover />
         </Stack>
       </StyledToolbar>
