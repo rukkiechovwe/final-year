@@ -1,9 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Typography, Grid } from "@mui/material";
 import CounselorSummary from "../../components/common/counselorSummary";
 import useAdmin from "../../utils/hooks/useUsers";
 
 const AdminCounselors = () => {
+  const navigate = useNavigate();
   const { counselors } = useAdmin();
   return (
     <>
@@ -13,7 +15,14 @@ const AdminCounselors = () => {
 
       <Grid container spacing={3}>
         {counselors.map((counselor) => (
-          <Grid item xs={12} sm={6} md={4} key={counselor.id}>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            key={counselor.id}
+            onClick={() => navigate(`/counselor-detail/${counselor.id}`)}
+          >
             <CounselorSummary
               name={counselor.name}
               gender={counselor.gender}

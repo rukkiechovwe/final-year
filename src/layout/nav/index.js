@@ -7,6 +7,7 @@ import Logo from "../../components/common/logo";
 import Scrollbar from "../../components/scrollbar";
 import NavSection from "../../components/nav-section";
 import navConfig from "./config";
+import useAuth from "../../utils/hooks/useAuth";
 
 const NAV_WIDTH = 280;
 
@@ -19,6 +20,7 @@ const StyledAccount = styled("div")(({ theme }) => ({
 }));
 
 export default function Nav({ openNav, onCloseNav }) {
+  const { user } = useAuth();
   const { pathname } = useLocation();
   const isDesktop = useResponsive("up", "lg");
 
@@ -51,11 +53,11 @@ export default function Nav({ openNav, onCloseNav }) {
 
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
-                John Doe
+                {user?.name ? user.name : ""}
               </Typography>
 
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                johndoe@gmail
+                {user?.email ? user.email : ""}
               </Typography>
             </Box>
           </StyledAccount>

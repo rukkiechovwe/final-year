@@ -9,10 +9,11 @@ import {
   IconButton,
   Popover,
 } from "@mui/material";
-// import useAuth from "../../utils/hooks/useAuth";
+import useAuth from "../../utils/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export default function AccountPopover() {
-  // const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const [open, setOpen] = useState(null);
 
   const handleOpen = (event) => {
@@ -66,10 +67,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            John Doe
+            {user?.name ? user.name : ""}
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
-            johndoe@gmail.com
+            {user?.email ? user.email : ""}
           </Typography>
         </Box>
 
@@ -77,11 +78,11 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: "dashed" }} />
 
-        <MenuItem sx={{ m: 1 }}>Logout</MenuItem>
+        {/* <MenuItem sx={{ m: 1 }}>Logout</MenuItem> */}
 
-        {/* <MenuItem onClick={logout()} sx={{ m: 1 }}>
+        <MenuItem onClick={() => logout()} sx={{ m: 1 }}>
           Logout
-        </MenuItem> */}
+        </MenuItem>
       </Popover>
     </>
   );

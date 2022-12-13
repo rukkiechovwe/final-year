@@ -11,35 +11,18 @@ const CounselorHome = () => {
         </Typography>
 
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6}>
             <AppWidgetSummary
-              title="Students"
-              total={200}
-              icon={"ant-design:android-filled"}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary
-              title="Counselors"
-              total={100}
-              color="info"
-              icon={"ant-design:apple-filled"}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary
-              title="Upcoming Sessions"
+              title="Total Sessions"
               total={10}
               color="warning"
               icon={"ant-design:windows-filled"}
             />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6}>
             <AppWidgetSummary
-              title="Rejected Sessions"
+              title="Upcoming Sessions"
               total={5}
               color="error"
               icon={"ant-design:bug-filled"}

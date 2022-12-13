@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import { db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
@@ -92,6 +92,7 @@ function UserContextProvider({ children }) {
   const getUser = async (id) => {
     const docRef = doc(db, "users", id);
     const docSnap = await getDoc(docRef);
+    console.log("<======== fetching user data and role ========>");
 
     if (docSnap.exists()) {
       const userData = docSnap.data();
@@ -135,6 +136,7 @@ function UserContextProvider({ children }) {
         payload: { ...state, isAuthenticated: false, user: null },
       });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

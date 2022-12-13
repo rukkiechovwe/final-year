@@ -8,8 +8,11 @@ import {
   MenuItem,
 } from "@mui/material";
 import FormDialog from "./dialog";
+import useCounselor from "../utils/hooks/useCounselor";
 
 export default function BookSession({ openSessionModal, handleCloseSession }) {
+  const { counselors } = useCounselor();
+
   return (
     <Formik
       initialValues={{
@@ -37,9 +40,11 @@ export default function BookSession({ openSessionModal, handleCloseSession }) {
         <FormControl fullWidth sx={{ mt: "1rem" }}>
           <InputLabel id="counselor">Select a counselor</InputLabel>
           <Select labelId="counselor" id="counselor" label="select a counselor">
-            <MenuItem value="Sharon">Sharon</MenuItem>
-            <MenuItem value="John">John</MenuItem>
-            <MenuItem value="Ruth">Ruth</MenuItem>
+            {counselors.map((item) => (
+              <MenuItem key={item.name} value={item.name}>{item.name}</MenuItem>
+            ))}
+            {/* <MenuItem value="John">John</MenuItem>
+            <MenuItem value="Ruth">Ruth</MenuItem> */}
           </Select>
         </FormControl>
         <FormControl fullWidth sx={{ mt: "1rem" }}>

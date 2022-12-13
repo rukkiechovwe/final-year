@@ -15,6 +15,10 @@ import {
 import useAuth from "../../../utils/hooks/useAuth";
 import { db, storage } from "../../../firebase";
 
+//  set counselors available days and time
+// available days==> a multi select dropdown with the list of days(Mon-Fri)
+// available time ==> a multi select dropdown with the list of time (9am-10am, 10:10am-11:10am,...etc.)
+
 const UpdateProfileForm = () => {
   const { user } = useAuth();
 
@@ -23,6 +27,8 @@ const UpdateProfileForm = () => {
       initialValues={{
         bio: "",
         file: "",
+        avalableDays: [],
+        avalableTime: [],
         submit: null,
       }}
       validationSchema={Yup.object().shape({

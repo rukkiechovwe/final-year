@@ -27,14 +27,16 @@ import CounselorSessionDetails from "../page/couselors/sessionDetails";
 
 // admin pages
 import AdminHome from "../page/admin";
-import AdminSessions from "../page/admin/sessions";
+// import AdminSessions from "../page/admin/sessions";
 import AdminCounselors from "../page/admin/counselors";
+import AdminStudents from "../page/admin/students";
 import AdminCounselorDetails from "../page/admin/counselorDetails";
-import AdminSessionDetails from "../page/admin/sessionDetails";
+// import AdminSessionDetails from "../page/admin/sessionDetails";
 
 // OTHERS
 import useAuth from "../utils/hooks/useAuth";
 import AdminContextProvider from "../context/adminContext";
+import CounselorsContextProvider from "../context/counselorsContext";
 
 // const Loadable = (props, {Component}) => {
 //   return (
@@ -61,6 +63,13 @@ export default function Router() {
 
 const getRouteBasedOnUserRole = (userRole) => {
   let route = [];
+
+  // if (!user?.role) {
+  //   // return loading screen
+  // } else {
+  //   // switch statement
+  // }
+
   switch (userRole) {
     case 1:
       route.push({
@@ -74,10 +83,11 @@ const getRouteBasedOnUserRole = (userRole) => {
         ),
         children: [
           { path: "/", element: <AdminHome /> },
-          { path: "sessions", element: <AdminSessions /> },
-          { path: "counselor", element: <AdminCounselors /> },
-          { path: "counselor-details", element: <AdminCounselorDetails /> },
-          { path: "session-details", element: <AdminSessionDetails /> },
+          // { path: "sessions", element: <AdminSessions /> },
+          { path: "counselors", element: <AdminCounselors /> },
+          { path: "students", element: <AdminStudents /> },
+          { path: "counselor-detail/:id", element: <AdminCounselorDetails /> },
+          // { path: "session-detail/:id", element: <AdminSessionDetails /> },
         ],
       });
       break;
@@ -93,7 +103,7 @@ const getRouteBasedOnUserRole = (userRole) => {
           { path: "/", element: <CounselorHome /> },
           { path: "sessions", element: <CounselorSessions /> },
           { path: "profile", element: <CounselorProfile /> },
-          { path: "session-details", element: <CounselorSessionDetails /> },
+          { path: "session-detail", element: <CounselorSessionDetails /> },
         ],
       });
       break;
@@ -102,14 +112,16 @@ const getRouteBasedOnUserRole = (userRole) => {
         path: "/",
         element: (
           <AuthGuard>
-            <DashboardLayout />
+            <CounselorsContextProvider>
+              <DashboardLayout />
+            </CounselorsContextProvider>
           </AuthGuard>
         ),
         children: [
           { path: "/", element: <StudentHome /> },
           { path: "sessions", element: <StudentSessions /> },
           { path: "profile", element: <StudentProfile /> },
-          { path: "session-details", element: <StudentSessionDetails /> },
+          { path: "session-detail", element: <StudentSessionDetails /> },
         ],
       });
       break;

@@ -1,18 +1,24 @@
 ____TODO____
-+ View Students
++ Update available time and days for counselor
 + Book Session
 + View Session
++ View Session detail
++ Session Questionnaire
 
 
 ____DONE____
 + Template of the system
 + Sign Up
 + Log in
++ Logout
 + Auth Gaurd
 + Update Student Profile
 + Add Counselor
 + Update Counselor Profile
 + View Counselor
++ View Students
++ View Counselor Detail
+
 
 
 ____BUGS____
