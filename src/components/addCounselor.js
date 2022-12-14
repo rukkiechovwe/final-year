@@ -70,13 +70,10 @@ export default function AddCounselor({
         password: Yup.string().max(255).required("Password is required"),
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-        console.log(values);
         createUserWithEmailAndPassword(auth, values.email, values.password)
           .then(async (userCredential) => {
             setSubmitting(true);
-
             const user = userCredential.user;
-            console.log(user);
 
             // add user to firestore
             const counselorData = {

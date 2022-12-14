@@ -64,37 +64,41 @@ export default function BookSession({ openSessionModal, handleCloseSession }) {
       }}
       validationSchema={Yup.object().shape({
         time: Yup.string().required("session time is required"),
-        // day: Yup.string().required("session day is required"),
+        day: Yup.string().required("session day is required"),
         type: Yup.string().required("session type is required"),
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         console.log("test");
         console.log(values);
 
-         setSubmitting(true);
-         const counselorData = {
-           sessionType: values.type,
-           sessionTime: values.time,
-           sessionDay: value,
-           counselorId: counselorId,
-           studentId: user.id,
-           sessionStatus: "upcoming",
-         };
-
-         const docRef = await addDoc(collection(db, "sessions"), {
-           counselorData,
-         });
-         console.log(counselorData);
-         console.log("Document written with ID: ", docRef.id);
-
-         // update sessions with session id
-         const updateSession = doc(db, "sessions", docRef.id);
-         await updateDoc(updateSession, {
-           sessionId: docRef.id,
-         });
-         setStatus({ success: true });
-         setErrors({});
-         handleCloseSession();
+        try {
+          setSubmitting(true);
+          const counselorData = {
+            sessionType: values.type,
+            sessionTime: values.time,
+            sessionDay: value,
+            counselorId: counselorId,
+            studentId: user.id,
+            sessionStatus: "upcoming",
+          };
+          const docRef = await addDoc(collection(db, "sessions"), {
+            counselorData,
+          });
+          console.log("Document written with ID: ", docRef.id);
+          // update sessions with session id
+          const updateSession = doc(db, "sessions", docRef.id);
+          await updateDoc(updateSession, {
+            sessionId: docRef.id,
+          });
+          setStatus({ success: true });
+          setErrors({});
+          handleCloseSession();
+        } catch (error) {
+          setStatus({ success: false });
+          setErrors({ submit: error.message });
+        } finally {
+          setSubmitting(false);
+        }
       }}
     >
       {({
