@@ -57,7 +57,7 @@ export default function AddCounselor({
         password: "",
         bio: "",
         image: "",
-        gender: "",
+        gender: "female",
         submit: null,
       }}
       validationSchema={Yup.object().shape({
@@ -74,6 +74,7 @@ export default function AddCounselor({
         createUserWithEmailAndPassword(auth, values.email, values.password)
           .then(async (userCredential) => {
             setSubmitting(true);
+
             const user = userCredential.user;
             console.log(user);
 
@@ -82,8 +83,8 @@ export default function AddCounselor({
               name: `${values.firstname} ${values.lastname}`,
               email: values.email,
               bio: "",
-              image: "",
-              gender: "",
+              file: "",
+              gender: values.gender,
               id: user.uid,
               role: 2,
             };
@@ -256,6 +257,7 @@ export default function AddCounselor({
                   aria-labelledby="demo-radio-buttons-group-label"
                   defaultValue="female"
                   name="radio-buttons-group"
+                  values={values.gender}
                   onChange={handleChange}
                 >
                   <Stack direction="row">

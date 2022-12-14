@@ -28,9 +28,10 @@ const AuthLogin = () => {
   };
 
   const handleSubmit = (values, setErrors, setStatus, setSubmitting) => {
+    setSubmitting(true);
     signInWithEmailAndPassword(auth, values.email, values.password)
       .then((userCredential) => {
-        setSubmitting(false);
+        setSubmitting(true);
         setStatus({ success: true });
         const user = userCredential.user;
         localStorage.setItem("token", user.uid);

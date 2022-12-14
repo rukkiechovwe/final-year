@@ -5,13 +5,13 @@ export default function Breadcrumb({ prevTitle, prev, activeTitle, active }) {
   return (
     <div>
       <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 5 }}>
-        <Link underline="hover" color="inherit" href={prev}>
+        <Link underline="hover" color="inherit" to={prev}>
           {prevTitle}
         </Link>
         <Link
           underline="hover"
           color="text.primary"
-          href={active}
+          to={active}
           aria-current="page"
         >
           {activeTitle}

@@ -42,9 +42,9 @@ export default function AdminCounselorDetails() {
     <div>
       <Detail
         prevTitle="Counselor"
-        prev="/counselor"
+        prev="/counselors"
         activeTitle="Details"
-        active="/details"
+        active={`/counselor-detail/${params.id}`}
       >
         {loading ? (
           <CircularProgress color="secondary" />

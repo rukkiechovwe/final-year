@@ -5,7 +5,7 @@ export default function CounselorSummary({ name, gender, image }) {
     <Card>
       <CardMedia
         component="img"
-        height="250"
+        height="150"
         image={image}
         alt="green iguana"
         sx={{ objectFit: "cover" }}

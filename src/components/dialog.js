@@ -1,12 +1,14 @@
 import * as React from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import { Typography } from "@mui/material";
+import {
+  Button,
+  Typography,
+  DialogTitle,
+  DialogContentText,
+  DialogContent,
+  DialogActions,
+  Dialog,
+} from "@mui/material";
 
 export default function FormDialog({
   children,
@@ -26,7 +28,17 @@ export default function FormDialog({
             alignItems: "center",
           }}
         >
-          <Typography variant="h3">{title}</Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              fontWeight: 600,
+              fontSize: "1.5rem",
+              lineHeight: "1.33",
+              fontFamily: "'Public Sans',sans-serif",
+            }}
+          >
+            {title}
+          </Typography>
 
           <Button onClick={handleClose}>
             <CloseIcon />

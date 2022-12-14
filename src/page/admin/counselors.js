@@ -18,8 +18,8 @@ const AdminCounselors = () => {
           <Grid
             item
             xs={12}
-            sm={6}
-            md={4}
+            sm={4}
+            md={3}
             key={counselor.id}
             onClick={() => navigate(`/counselor-detail/${counselor.id}`)}
           >

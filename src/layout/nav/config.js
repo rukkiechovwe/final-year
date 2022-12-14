@@ -11,7 +11,7 @@ const navConfig = [
   {
     title: "sessions",
     path: "/sessions",
-    role: [1, 2, 3],
+    role: [2, 3],
     icon: <CheckBoxOutlinedIcon />,
   },
   {
@@ -41,7 +41,7 @@ const navConfig = [
   {
     title: "session detail",
     path: "/session-detail",
-    role: [1, 2, 3],
+    role: [ 2, 3],
     icon: <CheckBoxOutlinedIcon />,
   },
 ];

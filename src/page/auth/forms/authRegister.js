@@ -43,7 +43,6 @@ const AuthRegister = () => {
   const handleSubmit = (values, setErrors, setStatus, setSubmitting) => {
     createUserWithEmailAndPassword(auth, values.email, values.password)
       .then(async (userCredential) => {
-        setSubmitting(true);
         const user = userCredential.user;
         console.log(user);
 
@@ -53,7 +52,7 @@ const AuthRegister = () => {
           email: values.email,
           department: values.department,
           annonymous_stat: false,
-          gender: "",
+          gender: values.gender,
           id: user.uid,
           role: 3,
         };
@@ -89,6 +88,7 @@ const AuthRegister = () => {
           email: "",
           department: "",
           password: "",
+          gender:"female",
           submit: null,
         }}
         validationSchema={Yup.object().shape({
@@ -101,6 +101,7 @@ const AuthRegister = () => {
           password: Yup.string().max(255).required("Password is required"),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+          setSubmitting(true);
           handleSubmit(values, setErrors, setStatus, setSubmitting);
         }}
       >
@@ -272,6 +273,8 @@ const AuthRegister = () => {
                   aria-labelledby="demo-radio-buttons-group-label"
                   defaultValue="female"
                   name="radio-buttons-group"
+                  value={values.gender}
+                  onChange={handleChange}
                 >
                   <FormControlLabel
                     value="female"

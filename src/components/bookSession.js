@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import FormDialog from "./dialog";
 import useCounselor from "../utils/hooks/useCounselor";
+import useAuth from "../utils/hooks/useAuth"
 
 import { db } from "../firebase";
 
@@ -23,6 +24,7 @@ import { db } from "../firebase";
   ...i.e remove it from the counselors list of available time
 */
 export default function BookSession({ openSessionModal, handleCloseSession }) {
+  const {user} = useAuth()
   const { counselors } = useCounselor();
   const [loadingAvailability, setLoadingAvailability] = useState(false);
   const [counselorId, setCounselorId] = useState("");
@@ -73,7 +75,7 @@ export default function BookSession({ openSessionModal, handleCloseSession }) {
         //     ...values,
         //     // date should be 22/12/22 not "Mon"
         //     sessionId: "session-id",
-        //     counselorId: "counselor-id",
+        //     counselorId: counselorId",
         //     studentId: "student-id",
         //     sessionStatus: "upcoming",
         //   };
