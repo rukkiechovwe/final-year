@@ -1,8 +1,8 @@
 import * as Yup from "yup";
+import { useState } from "react";
 import { Formik } from "formik";
 import { doc, updateDoc } from "firebase/firestore";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
-
 import {
   Button,
   FormHelperText,
@@ -11,24 +11,56 @@ import {
   OutlinedInput,
   Stack,
   TextareaAutosize,
+  Select,
+  MenuItem,
+  Checkbox,
+  ListItemText,
 } from "@mui/material";
 import useAuth from "../../../utils/hooks/useAuth";
 import { db, storage } from "../../../firebase";
 
-//  set counselors available days and time
-// available days==> a multi select dropdown with the list of days(Mon-Fri)
-// available time ==> a multi select dropdown with the list of time (9am-10am, 10:10am-11:10am,...etc.)
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+const daysAvailable = ["Mon", "Tue", "Wed", "Thurs", "Fri"];
+const timeAvailable = [
+  "8am-9am",
+  "9am-10am",
+  "10am-11am",
+  "11am-12pm",
+  "12pm-1pm",
+  "1pm-2pm",
+  "2pm-3pm",
+  "3pm-4pm",
+  "4pm-5pm",
+];
 
 const UpdateProfileForm = () => {
   const { user } = useAuth();
+  const [daysValue, setDaysValue] = useState([]);
+  const [timeValue, setTimeValue] = useState([]);
+
+  const handleMultiChange = (event, name) => {
+    const {
+      target: { value },
+    } = event;
+    name === "availableDays"
+      ? setDaysValue(typeof value === "string" ? value.split(",") : value)
+      : setTimeValue(typeof value === "string" ? value.split(",") : value);
+  };
 
   return (
     <Formik
       initialValues={{
-        bio: "",
-        file: "",
-        avalableDays: [],
-        avalableTime: [],
+        bio: user?.bio ? user.bio : "",
+        file: user?.file ? user.file : "",
         submit: null,
       }}
       validationSchema={Yup.object().shape({
@@ -49,6 +81,8 @@ const UpdateProfileForm = () => {
               await updateDoc(counselor, {
                 bio: values.bio,
                 file: url,
+                availableDays: daysValue,
+                availableTime: timeValue,
               });
               setStatus({ success: true });
             });
@@ -138,7 +172,6 @@ const UpdateProfileForm = () => {
                 )}
               </Stack>
             </Grid>
-
             <Grid item xs={12}>
               <Stack spacing={1}>
                 <InputLabel htmlFor="bio">Short Bio*</InputLabel>
@@ -158,6 +191,55 @@ const UpdateProfileForm = () => {
                     {errors.bio}
                   </FormHelperText>
                 )}
+              </Stack>
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <Stack spacing={1}>
+                <InputLabel htmlFor="bio">Days Available*</InputLabel>
+
+                <Select
+                  labelId="demo-multiple-checkbox-label"
+                  id="demo-multiple-checkbox"
+                  multiple
+                  value={daysValue}
+                  onChange={(e) => handleMultiChange(e, "availableDays")}
+                  input={<OutlinedInput label="Tag" />}
+                  renderValue={(selected) => selected.join(", ")}
+                  MenuProps={MenuProps}
+                  name="availableDays"
+                >
+                  {daysAvailable.map((name) => (
+                    <MenuItem key={name} value={name}>
+                      <Checkbox checked={daysValue.indexOf(name) > -1} />
+                      <ListItemText primary={name} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Stack>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Stack spacing={1}>
+                <InputLabel htmlFor="bio">Time Available*</InputLabel>
+
+                <Select
+                  labelId="demo-multiple-checkbox-label"
+                  id="demo-multiple-checkbox"
+                  multiple
+                  value={timeValue}
+                  onChange={(e) => handleMultiChange(e, "availableTime")}
+                  input={<OutlinedInput label="Tag" />}
+                  renderValue={(selected) => selected.join(", ")}
+                  MenuProps={MenuProps}
+                  name="availableTime"
+                >
+                  {timeAvailable.map((name) => (
+                    <MenuItem key={name} value={name}>
+                      <Checkbox checked={timeValue.indexOf(name) > -1} />
+                      <ListItemText primary={name} />
+                    </MenuItem>
+                  ))}
+                </Select>
               </Stack>
             </Grid>
 

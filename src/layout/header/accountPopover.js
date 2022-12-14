@@ -10,7 +10,6 @@ import {
   Popover,
 } from "@mui/material";
 import useAuth from "../../utils/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
 
 export default function AccountPopover() {
   const { user, logout } = useAuth();

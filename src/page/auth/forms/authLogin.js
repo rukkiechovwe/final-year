@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -38,7 +37,6 @@ const AuthLogin = () => {
 
         //   navigate to home page
         getUser(user.uid);
-      
       })
       .catch((error) => {
         setSubmitting(false);

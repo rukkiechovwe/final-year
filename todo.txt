@@ -1,9 +1,9 @@
 ____TODO____
-+ Update available time and days for counselor
 + Book Session
 + View Session
 + View Session detail
 + Session Questionnaire
++ Show snackbars
 
 
 ____DONE____
@@ -18,7 +18,10 @@ ____DONE____
 + View Counselor
 + View Students
 + View Counselor Detail
++ Update available time and days for counselor
 
 
 
 ____BUGS____
++ when a counselor updates profile the first time,counselor date and time available, image...
+...should show on the profile
