@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import {
   Box,
   Link,
@@ -15,104 +15,105 @@ import {
 
 import Dot from "./common/dot";
 
-function createData(sessionId, name, type, date, carbs, protein) {
-  return { sessionId, name, type, date, carbs, protein };
-}
+// function createData(sessionId, name, type, date, carbs, protein) {
+//   return { sessionId, name, type, date, carbs, protein };
+// }
 
-const rows = [
-  createData(84564564, "Camera Lens", "Physical", "12/3/22", 2, 40570),
-  createData(98764564, "Laptop", "Online", "12/3/22", 0, 180139),
-  createData(98756325, "Mobile", "Physical", "12/3/22", 1, 90989),
-  createData(98652366, "Handset", "Online", "12/3/22", 1, 10239),
-  createData(13286564, "Computer Accessories", "Online", "12/3/22", 1, 83348),
-  createData(86739658, "TV", "Online", "12/3/22", 0, 410780),
-  createData(13256498, "Keyboard", "Online", "12/3/22", 2, 70999),
-  createData(98753263, "Mouse", "Physical", "12/3/22", 2, 10570),
-  createData(98753275, "Desktop", "Online", "12/3/22", 1, 98063),
-  createData(98753291, "Chair", "Online", "12/3/22", 0, 14001),
-];
+// const rows = [
+//   createData(84564564, "Camera Lens", "Physical", "12/3/22", 2, 40570),
+//   createData(98764564, "Laptop", "Online", "12/3/22", 0, 180139),
+//   createData(98756325, "Mobile", "Physical", "12/3/22", 1, 90989),
+//   createData(98652366, "Handset", "Online", "12/3/22", 1, 10239),
+//   createData(13286564, "Computer Accessories", "Online", "12/3/22", 1, 83348),
+//   createData(86739658, "TV", "Online", "12/3/22", 0, 410780),
+//   createData(13256498, "Keyboard", "Online", "12/3/22", 2, 70999),
+//   createData(98753263, "Mouse", "Physical", "12/3/22", 2, 10570),
+//   createData(98753275, "Desktop", "Online", "12/3/22", 1, 98063),
+//   createData(98753291, "Chair", "Online", "12/3/22", 0, 14001),
+// ];
 
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
+// function descendingComparator(a, b, orderBy) {
+//   if (b[orderBy] < a[orderBy]) {
+//     return -1;
+//   }
+//   if (b[orderBy] > a[orderBy]) {
+//     return 1;
+//   }
+//   return 0;
+// }
 
-function getComparator(session, orderBy) {
-  return session === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
+// function getComparator(session, orderBy) {
+//   return session === "desc"
+//     ? (a, b) => descendingComparator(a, b, orderBy)
+//     : (a, b) => -descendingComparator(a, b, orderBy);
+// }
 
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const session = comparator(a[0], b[0]);
-    if (session !== 0) {
-      return session;
-    }
-    return a[1] - b[1];
+function stableSort(array) {
+  array.sort((a, b) => {
+    return b - a;
   });
-  return stabilizedThis.map((el) => el[0]);
+  return array;
 }
 
 const headCells = [
   {
     id: "sessionId",
-    align: "left",
-    disablePadding: false,
     label: "Session Id",
+    role: 0,
   },
   {
     id: "name",
-    align: "left",
-    disablePadding: true,
+    label: "Student Name",
+    role: 2,
+  },
+  {
+    id: "name",
     label: "Counselor Name",
+    role: 3,
   },
   {
     id: "type",
-    align: "left",
-    disablePadding: false,
     label: "Session Type",
+    role: 0,
   },
   {
     id: "date",
-    align: "left",
-    disablePadding: false,
     label: "Session Date",
+    role: 0,
   },
   {
-    id: "carbs",
-    align: "left",
-    disablePadding: false,
+    id: "time",
+    label: "Session Time",
+    role: 0,
+  },
+  {
+    id: "status",
     label: "Status",
+    role: 0,
   },
-  {
-    id: "protein",
-    align: "right",
-    disablePadding: false,
-    label: "Meeting Link",
-  },
+  // {
+  //   id: "location",
+  //   label: "Location",
+  // },
 ];
 
-function SessionTableHead({ session, orderBy }) {
+function SessionTableHead({ session, orderBy, userRole }) {
   return (
     <TableHead>
       <TableRow>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.align}
-            padding={headCell.disablePadding ? "none" : "normal"}
-            sortDirection={orderBy === headCell.id ? session : false}
-          >
-            {headCell.label}
-          </TableCell>
-        ))}
+        {headCells.map(
+          (headCell) =>
+            (headCell.role === userRole || headCell.role === 0) && (
+              <TableCell
+                key={headCell.id}
+                align="left"
+                padding="normal"
+                sortDirection={orderBy === headCell.id ? session : false}
+              >
+                {headCell.label}
+              </TableCell>
+            )
+        )}
       </TableRow>
     </TableHead>
   );
@@ -125,11 +126,11 @@ const SessionStatus = ({ status }) => {
   switch (status) {
     case 0:
       color = "warning";
-      title = "Pending";
+      title = "Upcoming";
       break;
     case 1:
       color = "success";
-      title = "Approved";
+      title = "Completed";
       break;
     case 2:
       color = "error";
@@ -148,10 +149,11 @@ const SessionStatus = ({ status }) => {
   );
 };
 
-export default function SessionTable() {
+export default function SessionTable({ sessions, userRole }) {
   const [session] = useState("asc");
   const [orderBy] = useState("sessionId");
   const [selected] = useState([]);
+  const navigate = useNavigate();
 
   const isSelected = (sessionId) => selected.indexOf(sessionId) !== -1;
 
@@ -178,44 +180,57 @@ export default function SessionTable() {
             },
           }}
         >
-          <SessionTableHead session={session} orderBy={orderBy} />
+          <SessionTableHead
+            session={session}
+            orderBy={orderBy}
+            userRole={userRole}
+          />
           <TableBody>
-            {stableSort(rows, getComparator(session, orderBy)).map(
-              (row, index) => {
-                const isItemSelected = isSelected(row.sessionId);
-                const labelId = `enhanced-table-checkbox-${index}`;
+            {stableSort(sessions).map((row, index) => {
+              const isItemSelected = isSelected(row.sessionId);
+              const labelId = `enhanced-table-checkbox-${index}`;
 
-                return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.sessionId}
-                    selected={isItemSelected}
+              return (
+                <TableRow
+                  hover
+                  role="checkbox"
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  aria-checked={isItemSelected}
+                  tabIndex={-1}
+                  key={row.sessionId}
+                  selected={isItemSelected}
+                  onClick={() => {
+                    navigate(`/session-detail/${row.sessionId}`);
+                  }}
+                >
+                  <TableCell
+                    component="th"
+                    id={labelId}
+                    scope="row"
+                    align="left"
                   >
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      align="left"
-                    >
-                      <Link color="secondary" component={RouterLink} to="">
-                        {row.sessionId}
-                      </Link>
-                    </TableCell>
-                    <TableCell align="left">{row.name}</TableCell>
-                    <TableCell align="left">{row.type}</TableCell>
-                    <TableCell align="left">{row.date}</TableCell>
-                    <TableCell align="left">
-                      <SessionStatus status={row.carbs} />
-                    </TableCell>
-                    <TableCell align="right">$70,000</TableCell>
-                  </TableRow>
-                );
-              }
-            )}
+                    <Link color="secondary" component={RouterLink} to="">
+                      {row.sessionId}
+                    </Link>
+                  </TableCell>
+                  {/* <TableCell align="left">{row.studentId}</TableCell> */}
+                  <TableCell align="left">
+                    {userRole === 3 ? row.counselorId : row.studentId}
+                  </TableCell>
+                  <TableCell align="left">{row.sessionType}</TableCell>
+                  <TableCell align="left">{row.sessionDay}</TableCell>
+
+                  <TableCell align="left">{row.sessionTime}</TableCell>
+
+                  <TableCell align="left">
+                    <SessionStatus
+                      status={row.sessionStatus === "upcoming" ? 0 : 1}
+                    />
+                  </TableCell>
+                  {/* <TableCell align="right">Uniben Center</TableCell> */}
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>

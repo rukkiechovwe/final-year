@@ -5,7 +5,7 @@
 import React, { useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import useAuth from "../utils/hooks/useAuth";
-import Loader from "../components/loader";
+import Loadable from "../components/loadable";
 
 const AuthGuard = ({ children }) => {
   const { isAuthenticated, isInitialized, authToken } = useAuth();
@@ -19,7 +19,7 @@ const AuthGuard = ({ children }) => {
   }
 
   if (!isInitialized) {
-    return <Loader />;
+    return <Loadable />;
   }
 
   if (!isAuthenticated && !authToken) {

@@ -1,8 +1,10 @@
 import React from "react";
 import { Grid, Container, Typography } from "@mui/material";
 import AppWidgetSummary from "../../components/common/appSummary";
+import useSession from "../../utils/hooks/useSessions";
 
 const CounselorHome = () => {
+  const { userSessions } = useSession();
   return (
     <>
       <Container maxWidth="xl">
@@ -14,7 +16,7 @@ const CounselorHome = () => {
           <Grid item xs={12} sm={6}>
             <AppWidgetSummary
               title="Total Sessions"
-              total={10}
+              total={userSessions?.length}
               color="warning"
               icon={"ant-design:windows-filled"}
             />

@@ -1,9 +1,11 @@
 ____TODO____
-+ Book Session
-+ View Session
-+ View Session detail
++ Filter upcoming sessions and get the total number
++ Book Online Session
++ Fix date picker
++ Integrate google meet
 + Session Questionnaire
 + Show snackbars
++ Clean code
 
 
 ____DONE____
@@ -19,9 +21,14 @@ ____DONE____
 + View Students
 + View Counselor Detail
 + Update available time and days for counselor
-
++ Book Physical Session
++ View Session
++ View Session detail
 
 
 ____BUGS____
-+ when a counselor updates profile the first time,counselor date and time available, image...
++ when a counselor updates profile the first time, counselor date and time available, image...
 ...should show on the profile
++ booking sessions
+    - counselor available time should be reset daily
+    - 

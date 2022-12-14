@@ -22,12 +22,6 @@ import useCounselor from "../utils/hooks/useCounselor";
 import useAuth from "../utils/hooks/useAuth";
 import { db } from "../firebase";
 
-/*
-  + select a counselor
-  + fetch the available time of that counselor
-  + when a user selects that time, mark the time as unavailable...
-  ...i.e remove it from the counselors list of available time
-*/
 export default function BookSession({ openSessionModal, handleCloseSession }) {
   const { user } = useAuth();
   const { counselors } = useCounselor();
@@ -51,6 +45,8 @@ export default function BookSession({ openSessionModal, handleCloseSession }) {
   };
 
   useEffect(() => {
+    setDaysAvailable([]);
+    setTimeAvailable([]);
     setLoadingAvailability(true);
     fetchCounselor(counselorId);
   }, [counselorId]);
@@ -71,30 +67,35 @@ export default function BookSession({ openSessionModal, handleCloseSession }) {
         console.log("test");
         console.log(values);
 
-         setSubmitting(true);
-         const counselorData = {
-           sessionType: values.type,
-           sessionTime: values.time,
-           sessionDay: value,
-           counselorId: counselorId,
-           studentId: user.id,
-           sessionStatus: "upcoming",
-         };
+        setSubmitting(true);
+        const counselorData = {
+          sessionType: values.type,
+          sessionTime: values.time,
+          sessionDay: value.toString(),
+          counselorId: counselorId,
+          studentId: user.id,
+          sessionStatus: "upcoming",
+          sessionId: "",
+        };
+        const docRef = await addDoc(collection(db, "sessions"), counselorData);
 
-         const docRef = await addDoc(collection(db, "sessions"), {
-           counselorData,
-         });
-         console.log(counselorData);
-         console.log("Document written with ID: ", docRef.id);
+        // update session with the session id
+        const updateSession = doc(db, "sessions", docRef.id);
+        await updateDoc(updateSession, {
+          sessionId: docRef.id,
+        });
 
-         // update sessions with session id
-         const updateSession = doc(db, "sessions", docRef.id);
-         await updateDoc(updateSession, {
-           sessionId: docRef.id,
-         });
-         setStatus({ success: true });
-         setErrors({});
-         handleCloseSession();
+        // remove the time from counselors list of available time
+        let time = timeAvailable;
+        let filteredTime = time.filter((e) => e !== values.time);
+        const updateCounselor = doc(db, "users", counselorId);
+        await updateDoc(updateCounselor, {
+          availableTime: filteredTime,
+        });
+
+        setStatus({ success: true });
+        setErrors({});
+        handleCloseSession();
       }}
     >
       {({

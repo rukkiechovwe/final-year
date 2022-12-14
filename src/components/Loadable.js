@@ -1,15 +1,31 @@
-import { Suspense } from 'react';
+import { Suspense } from "react";
+import { styled } from "@mui/material/styles";
+import LinearProgress from "@mui/material/LinearProgress";
 
-// project import
-import Loader from './Loader';
+const LoaderWrapper = styled("div")(({ theme }) => ({
+  position: "fixed",
+  top: 0,
+  left: 0,
+  zIndex: 2001,
+  width: "100%",
+  "& > * + *": {
+    marginTop: theme.spacing(2),
+  },
+}));
 
-// ==============================|| LOADABLE - LAZY LOADING ||============================== //
+const Loader = () => (
+  <LoaderWrapper>
+    <LinearProgress color="primary" />
+  </LoaderWrapper>
+);
 
-const Loadable = (Component) => (props) =>
+const Loadable =
+  ({ Component }) =>
+  (props) =>
     (
-        <Suspense fallback={<Loader />}>
-            <Component {...props} />
-        </Suspense>
+      <Suspense fallback={<Loader />}>
+        <Component {...props} />
+      </Suspense>
     );
 
 export default Loadable;

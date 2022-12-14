@@ -32,18 +32,6 @@ const navConfig = [
     role: [2, 3],
     icon: <CheckBoxOutlinedIcon />,
   },
-  // {
-  //   title: "counselor-detail",
-  //   path: "/counselor-detail",
-  //   role: [1],
-  //   icon: <CheckBoxOutlinedIcon />,
-  // },
-  {
-    title: "session detail",
-    path: "/session-detail",
-    role: [ 2, 3],
-    icon: <CheckBoxOutlinedIcon />,
-  },
 ];
 
 export default navConfig;

@@ -1,5 +1,4 @@
-// import { Suspense, lazy } from "react";
-// import LoadingScreen from '../components/LoadingScreen';
+import Loadable from "../components/loadable";
 import { useRoutes } from "react-router-dom";
 
 // layouts
@@ -14,7 +13,6 @@ import Register from "../page/auth/register";
 // student pages
 import StudentHome from "../page/students";
 import StudentSessions from "../page/students/sessions";
-import StudentSessionDetails from "../page/students/sessionDetails";
 import StudentProfile from "../page/students/profile";
 
 import Home from "../page/home/index";
@@ -23,7 +21,6 @@ import Home from "../page/home/index";
 import CounselorSessions from "../page/couselors/sessions";
 import CounselorHome from "../page/couselors";
 import CounselorProfile from "../page/couselors/profile";
-import CounselorSessionDetails from "../page/couselors/sessionDetails";
 
 // admin pages
 import AdminHome from "../page/admin";
@@ -31,20 +28,13 @@ import AdminHome from "../page/admin";
 import AdminCounselors from "../page/admin/counselors";
 import AdminStudents from "../page/admin/students";
 import AdminCounselorDetails from "../page/admin/counselorDetails";
-// import AdminSessionDetails from "../page/admin/sessionDetails";
 
 // OTHERS
 import useAuth from "../utils/hooks/useAuth";
 import AdminContextProvider from "../context/adminContext";
 import CounselorsContextProvider from "../context/counselorsContext";
-
-// const Loadable = (props, {Component}) => {
-//   return (
-//     <Suspense fallback={<LoadingScreen />}>
-//       <Component {...props} />
-//     </Suspense>
-//   );
-// };
+import SessionContextProvider from "../context/sessionContext";
+import SessionDetails from "../page/details/sessionDetails";
 
 export default function Router() {
   const { user } = useAuth();
@@ -63,12 +53,6 @@ export default function Router() {
 
 const getRouteBasedOnUserRole = (userRole) => {
   let route = [];
-
-  // if (!user?.role) {
-  //   // return loading screen
-  // } else {
-  //   // switch statement
-  // }
 
   switch (userRole) {
     case 1:
@@ -96,14 +80,16 @@ const getRouteBasedOnUserRole = (userRole) => {
         path: "/",
         element: (
           <AuthGuard>
-            <DashboardLayout />
+            <SessionContextProvider>
+              <DashboardLayout />
+            </SessionContextProvider>
           </AuthGuard>
         ),
         children: [
           { path: "/", element: <CounselorHome /> },
           { path: "sessions", element: <CounselorSessions /> },
           { path: "profile", element: <CounselorProfile /> },
-          { path: "session-detail", element: <CounselorSessionDetails /> },
+          { path: "session-detail/:id", element: <SessionDetails /> },
         ],
       });
       break;
@@ -113,7 +99,9 @@ const getRouteBasedOnUserRole = (userRole) => {
         element: (
           <AuthGuard>
             <CounselorsContextProvider>
-              <DashboardLayout />
+              <SessionContextProvider>
+                <DashboardLayout />
+              </SessionContextProvider>
             </CounselorsContextProvider>
           </AuthGuard>
         ),
@@ -121,7 +109,7 @@ const getRouteBasedOnUserRole = (userRole) => {
           { path: "/", element: <StudentHome /> },
           { path: "sessions", element: <StudentSessions /> },
           { path: "profile", element: <StudentProfile /> },
-          { path: "session-detail", element: <StudentSessionDetails /> },
+          { path: "session-detail/:id", element: <SessionDetails /> },
         ],
       });
       break;
@@ -134,9 +122,11 @@ const getRouteBasedOnUserRole = (userRole) => {
             <DashboardLayout />
           </AuthGuard>
         ),
-        children: [{ path: "/", element: <Home /> }],
+        children: [
+          { path: "/", element: <Loadable /> },
+          { path: "*", element: <Home /> },
+        ],
       });
-    // return 404 route
   }
 
   return route;
