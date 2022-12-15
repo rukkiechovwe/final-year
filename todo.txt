@@ -1,5 +1,4 @@
 ____TODO____
-+ Filter upcoming sessions and get the total number
 + Book Online Session
 + Fix date picker
 + Integrate google meet
@@ -9,26 +8,10 @@ ____TODO____
 
 
 ____DONE____
-+ Template of the system
-+ Sign Up
-+ Log in
-+ Logout
-+ Auth Gaurd
-+ Update Student Profile
-+ Add Counselor
-+ Update Counselor Profile
-+ View Counselor
-+ View Students
-+ View Counselor Detail
-+ Update available time and days for counselor
-+ Book Physical Session
-+ View Session
-+ View Session detail
+
+
 
 
 ____BUGS____
 + when a counselor updates profile the first time, counselor date and time available, image...
 ...should show on the profile
-+ booking sessions
-    - counselor available time should be reset daily
-    - 

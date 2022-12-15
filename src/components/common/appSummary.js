@@ -43,7 +43,7 @@ export default function AppWidgetSummary({
             )} 0%, ${alpha(theme.palette[color].dark, 0.24)} 100%)`,
         }}
       >
-        <HistoryOutlinedIcon width={24} height={24} />
+        {icon ? icon : <HistoryOutlinedIcon width={24} height={24} />}
       </StyledIcon>
 
       <Typography variant="h3">{total}</Typography>

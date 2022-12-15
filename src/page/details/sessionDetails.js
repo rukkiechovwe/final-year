@@ -1,37 +1,64 @@
-import { CircularProgress, Grid, Stack, Typography } from "@mui/material";
 import * as React from "react";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Grid, Stack, Typography } from "@mui/material";
+import { doc, getDoc } from "firebase/firestore";
 import Detail from "../../components/details";
 import Dot from "../../components/common/dot";
-import { useNavigate, useParams } from "react-router-dom";
-import { useState } from "react";
-import { useEffect } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import CircularLoader from "../../components/circularLoader";
 import { db } from "../../firebase";
 
 export default function SessionDetails() {
   const params = useParams();
   const navigate = useNavigate();
   const [session, setSession] = useState({});
+  const [student, setStudent] = useState({});
+  const [counselor, setCounselor] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const fetchData = async (id) => {
+  const fetchStudentInfo = async (id) => {
+    const docRef = doc(db, "users", id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      console.log("student data:", docSnap.data());
+      setStudent(docSnap.data());
+    } else {
+      console.log("No such student!");
+    }
+  };
+
+  const fetchCounselorInfo = async (id) => {
+    const docRef = doc(db, "users", id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      console.log("counselor data:", docSnap.data());
+      setCounselor(docSnap.data());
+      setLoading(false);
+    } else {
+      console.log("No such counselor!");
+    }
+  };
+
+  const fetchSessionDetail = async (id) => {
     const docRef = doc(db, "sessions", id);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data());
+      console.log("session data:", docSnap.data());
       setSession(docSnap.data());
-      setLoading(false);
+      fetchStudentInfo(docSnap.data().studentId);
+      fetchCounselorInfo(docSnap.data().counselorId);
     } else {
-      // doc.data() will be undefined in this case
-      console.log("No such document!");
+      console.log("No such session!");
     }
   };
 
   useEffect(() => {
     if (params.id) {
       setLoading(true);
-      fetchData(params.id);
+      fetchSessionDetail(params.id);
     } else {
       navigate(`/sessions`);
     }
@@ -46,25 +73,35 @@ export default function SessionDetails() {
         active={`/session-details/${params.id}`}
       >
         {loading ? (
-          <CircularProgress color="secondary" />
+          <CircularLoader />
         ) : (
           <>
             <Grid item xs={12} md={6}>
               <Stack direction="row">
-                <Typography variant="h5">Counselor Name:</Typography>
+                <Typography variant="h5">Student Name:</Typography>
                 <Typography variant="h5" sx={{ ml: 2, fontWeight: 400 }}>
-                  {session.counselorId}
+                  {student.name}
                 </Typography>
               </Stack>
             </Grid>
             <Grid item xs={12} md={6}>
               <Stack direction="row">
-                <Typography variant="h5">Student Name:</Typography>
+                <Typography variant="h5">Counselor Name:</Typography>
                 <Typography variant="h5" sx={{ ml: 2, fontWeight: 400 }}>
-                  {session.studentId}
+                  {counselor.name}
                 </Typography>
               </Stack>
             </Grid>
+
+            <Grid item xs={12} md={6}>
+              <Stack direction="row">
+                <Typography variant="h5">Student Email:</Typography>
+                <Typography variant="h5" sx={{ ml: 2, fontWeight: 400 }}>
+                  {student.email}
+                </Typography>
+              </Stack>
+            </Grid>
+
             <Grid item xs={12} md={6}>
               <Stack direction="row">
                 <Typography variant="h5">Session Type:</Typography>
@@ -73,6 +110,16 @@ export default function SessionDetails() {
                 </Typography>
               </Stack>
             </Grid>
+
+            <Grid item xs={12} md={6}>
+              <Stack direction="row">
+                <Typography variant="h5">Student Department:</Typography>
+                <Typography variant="h5" sx={{ ml: 2, fontWeight: 400 }}>
+                  {student.department}
+                </Typography>
+              </Stack>
+            </Grid>
+
             <Grid item xs={12} md={6}>
               <Stack direction="row">
                 <Typography variant="h5">Session Date:</Typography>
@@ -81,9 +128,30 @@ export default function SessionDetails() {
                 </Typography>
               </Stack>
             </Grid>
+
             <Grid item xs={12} md={6}>
               <Stack direction="row">
-                <Typography variant="h5">Status:</Typography>
+                <Typography variant="h5">Student Gender:</Typography>
+                <Typography variant="h5" sx={{ ml: 2, fontWeight: 400 }}>
+                  {student.gender}
+                </Typography>
+              </Stack>
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <Stack direction="row">
+                <Typography variant="h5">Session Venue:</Typography>
+                <Typography variant="h5" sx={{ ml: 2, fontWeight: 400 }}>
+                  Uniben Center
+                </Typography>
+              </Stack>
+            </Grid>
+
+            <Grid item xs={12} md={6}></Grid>
+
+            <Grid item xs={12} md={6}>
+              <Stack direction="row">
+                <Typography variant="h5">Session Status:</Typography>
                 <Typography variant="h5" sx={{ ml: 2, fontWeight: 400 }}>
                   <Stack direction="row" spacing={1} alignItems="center">
                     <Dot
@@ -95,14 +163,6 @@ export default function SessionDetails() {
                     />
                     <Typography>{session.sessionStatus}</Typography>
                   </Stack>
-                </Typography>
-              </Stack>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Stack direction="row">
-                <Typography variant="h5">Venue:</Typography>
-                <Typography variant="h5" sx={{ ml: 2, fontWeight: 400 }}>
-                  Uniben Center
                 </Typography>
               </Stack>
             </Grid>

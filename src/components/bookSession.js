@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -7,7 +7,16 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import { doc, getDoc, addDoc, collection, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  addDoc,
+  updateDoc,
+  collection,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import {
   FormControl,
   InputLabel,
@@ -21,35 +30,70 @@ import FormDialog from "./dialog";
 import useCounselor from "../utils/hooks/useCounselor";
 import useAuth from "../utils/hooks/useAuth";
 import { db } from "../firebase";
+import CircularLoader from "../components/circularLoader";
 
 export default function BookSession({ openSessionModal, handleCloseSession }) {
   const { user } = useAuth();
   const { counselors } = useCounselor();
-  const [loadingAvailability, setLoadingAvailability] = useState(false);
+  const [isCounselorLoading, setIsCounselorLoading] = useState(false);
+  const [isTimeLoading, setIsTimeLoading] = useState(false);
   const [counselorId, setCounselorId] = useState("");
-  const [daysAvailable, setDaysAvailable] = useState([]);
   const [timeAvailable, setTimeAvailable] = useState([]);
-  const [value, setValue] = useState(dayjs());
+  const [datevalue, setDateValue] = useState("");
 
   const fetchCounselor = async (id) => {
     const docRef = doc(db, "users", id);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      setDaysAvailable(docSnap.data().availableDays);
       setTimeAvailable(docSnap.data().availableTime);
-      setLoadingAvailability(false);
+      setIsCounselorLoading(false);
     } else {
       console.log("No such document!");
     }
   };
 
+  const fetchTimeSlot = async (counselorId, value) => {
+    const sessionsRef = collection(db, "sessions");
+    const q = query(
+      sessionsRef,
+      where("counselorId", "==", counselorId),
+      where("sessionDay", "==", dayjs(value.toString()).format("DD/MM/YYYY"))
+    );
+
+    const takenTimeSlot = [];
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      takenTimeSlot.push(doc.data().sessionTime);
+    });
+
+    console.log(takenTimeSlot);
+
+    const timeSlotLeft = timeAvailable.filter(
+      (e) => !takenTimeSlot.includes(e)
+    );
+    console.log(timeSlotLeft);
+    setTimeAvailable(timeSlotLeft);
+    setIsTimeLoading(false);
+  };
+
   useEffect(() => {
-    setDaysAvailable([]);
-    setTimeAvailable([]);
-    setLoadingAvailability(true);
-    fetchCounselor(counselorId);
+    if (counselorId) {
+      setTimeAvailable([]);
+      setDateValue("");
+      setIsCounselorLoading(true);
+      fetchCounselor(counselorId);
+    }
   }, [counselorId]);
+
+  useEffect(() => {
+    if (datevalue) {
+      setIsTimeLoading(true);
+      fetchTimeSlot(counselorId, datevalue);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datevalue]);
 
   return (
     <Formik
@@ -59,24 +103,22 @@ export default function BookSession({ openSessionModal, handleCloseSession }) {
         type: "",
       }}
       validationSchema={Yup.object().shape({
-        time: Yup.string().required("session time is required"),
+        // time: Yup.string().required("session time is required"),
         // day: Yup.string().required("session day is required"),
         type: Yup.string().required("session type is required"),
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-        console.log("test");
-        console.log(values);
-
         setSubmitting(true);
         const counselorData = {
           sessionType: values.type,
           sessionTime: values.time,
-          sessionDay: value.toString(),
+          sessionDay: dayjs(datevalue.toString()).format("DD/MM/YYYY"),
           counselorId: counselorId,
           studentId: user.id,
           sessionStatus: "upcoming",
           sessionId: "",
         };
+        console.log(counselorData);
         const docRef = await addDoc(collection(db, "sessions"), counselorData);
 
         // update session with the session id
@@ -85,13 +127,13 @@ export default function BookSession({ openSessionModal, handleCloseSession }) {
           sessionId: docRef.id,
         });
 
-        // remove the time from counselors list of available time
-        let time = timeAvailable;
-        let filteredTime = time.filter((e) => e !== values.time);
-        const updateCounselor = doc(db, "users", counselorId);
-        await updateDoc(updateCounselor, {
-          availableTime: filteredTime,
-        });
+        // // remove the time from counselors list of available time
+        // let time = timeAvailable;
+        // let filteredTime = time.filter((e) => e !== values.time);
+        // const updateCounselor = doc(db, "users", counselorId);
+        // await updateDoc(updateCounselor, {
+        //   availableTime: filteredTime,
+        // });
 
         setStatus({ success: true });
         setErrors({});
@@ -124,13 +166,73 @@ export default function BookSession({ openSessionModal, handleCloseSession }) {
                   setCounselorId(e.target.value);
                 }}
               >
-                {counselors.map((item) => (
-                  <MenuItem key={item.name} value={item.id}>
-                    {item.name}
-                  </MenuItem>
-                ))}
+                {counselors.length > 0 &&
+                  counselors.map((item) => (
+                    <MenuItem key={item.name} value={item.id}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
               </Select>
             </FormControl>
+
+            {!counselorId ? (
+              ""
+            ) : isCounselorLoading ? (
+              <CircularLoader />
+            ) : (
+              counselorId && (
+                <>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <Stack spacing={3} sx={{ mt: "1rem" }}>
+                      <DatePicker
+                        label="select a session day"
+                        value={datevalue}
+                        onBlur={handleBlur}
+                        onChange={(newValue) => {
+                          setDateValue(newValue);
+                        }}
+                        renderInput={(params) => <TextField {...params} />}
+                      />
+                    </Stack>
+                  </LocalizationProvider>
+                </>
+              )
+            )}
+
+            {!datevalue ? (
+              ""
+            ) : isTimeLoading ? (
+              <CircularLoader />
+            ) : (
+              <FormControl fullWidth sx={{ mt: "1rem" }}>
+                <InputLabel id="session-time">Session Time</InputLabel>
+                <Select
+                  labelId="session-time"
+                  id="time"
+                  name="time"
+                  label="select session time"
+                  value={values.time}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  error={Boolean(touched.time && errors.time)}
+                >
+                  {timeAvailable.map((item) => (
+                    <MenuItem key={item} value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.time && errors.time && (
+                  <FormHelperText
+                    error
+                    id="standard-weight-helper-text-time-session"
+                  >
+                    {errors.time}
+                  </FormHelperText>
+                )}
+              </FormControl>
+            )}
+
             <FormControl fullWidth sx={{ mt: "1rem" }}>
               <InputLabel id="type">Type</InputLabel>
               <Select
@@ -155,80 +257,6 @@ export default function BookSession({ openSessionModal, handleCloseSession }) {
                 </FormHelperText>
               )}
             </FormControl>
-            {!counselorId
-              ? ""
-              : loadingAvailability
-              ? "loading..."
-              : counselorId && (
-                  <>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <Stack spacing={3} sx={{ mt: "1rem" }}>
-                        <DatePicker
-                          label="select a session day"
-                          value={value}
-                          onChange={(newValue) => {
-                            setValue(newValue);
-                          }}
-                          renderInput={(params) => <TextField {...params} />}
-                        />
-                      </Stack>
-                    </LocalizationProvider>
-                    {/* <FormControl fullWidth sx={{ mt: "1rem" }}>
-                      <InputLabel id="session-day">Session Day</InputLabel>
-                      <Select
-                        labelId="session-day"
-                        id="day"
-                        name="day"
-                        label="select session day"
-                        value={values.day}
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        error={Boolean(touched.day && errors.day)}
-                      >
-                        {daysAvailable.map((item) => (
-                          <MenuItem key={item} value={item}>
-                            {item}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      {touched.day && errors.day && (
-                        <FormHelperText
-                          error
-                          id="standard-weight-helper-text-day-session"
-                        >
-                          {errors.day}
-                        </FormHelperText>
-                      )}
-                    </FormControl> */}
-                    <FormControl fullWidth sx={{ mt: "1rem" }}>
-                      <InputLabel id="session-time">Session Time</InputLabel>
-                      <Select
-                        labelId="session-time"
-                        id="time"
-                        name="time"
-                        label="select session time"
-                        value={values.time}
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        error={Boolean(touched.time && errors.time)}
-                      >
-                        {timeAvailable.map((item) => (
-                          <MenuItem key={item} value={item}>
-                            {item}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      {touched.time && errors.time && (
-                        <FormHelperText
-                          error
-                          id="standard-weight-helper-text-time-session"
-                        >
-                          {errors.time}
-                        </FormHelperText>
-                      )}
-                    </FormControl>
-                  </>
-                )}
 
             <Grid item xs={12} mt={3}>
               <Button

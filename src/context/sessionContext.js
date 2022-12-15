@@ -1,44 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import useAuth from "../utils/hooks/useAuth";
 
 export const SessionContext = React.createContext();
 
 function SessionContextProvider({ children }) {
   const { user } = useAuth();
-  const [sessions, setSessions] = useState([]);
-  const [userSessions, setUserSession] = useState([]);
+  const [userSessions, setUserSessions] = useState([]);
+  const [upcomingUserSessions, setUpcomingUserSessions] = useState([]);
+  const [completedUserSessions, setCompletedUserSessions] = useState([]);
 
   const fetchSessions = async () => {
     console.log("<======= fetching sessions ========>");
-    // fetch sessions
     const sessionsData = [];
-    const querySnapshot = await getDocs(collection(db, "sessions"));
+    let q;
+    const sessionsRef = collection(db, "sessions");
+
+    if (user.role === 3) {
+      q = query(sessionsRef, where("studentId", "==", user.id));
+    } else if (user.role === 2) {
+      q = query(sessionsRef, where("counselorId", "==", user.id));
+    } else {
+      return;
+    }
+
+    const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       console.log("session ==>", doc.data());
       sessionsData.push(doc.data());
     });
-    setSessions(sessionsData);
+    setUserSessions(sessionsData);
 
-    // filter session by user id
-    let filteredUserSessions = [];
-    console.log(user.role);
-    if (user.role === 3) {
-      filteredUserSessions = sessionsData.filter(
-        (session) => session.studentId === user.id
-      );
-    } else if (user.role === 2) {
-      filteredUserSessions = sessionsData.filter(
-        (session) => session.counselorId === user.id
-      );
-    } else {
-      return;
-    }
-    console.log(filteredUserSessions);
-    setUserSession(filteredUserSessions);
+    const upcomingData = sessionsData.filter(
+      (session) => session.sessionStatus === "upcoming"
+    );
+    setUpcomingUserSessions(upcomingData);
 
-    // filter upcomin sessions and completed sessions
+    const completedData = sessionsData.filter(
+      (session) => session.sessionStatus === "completed"
+    );
+    setCompletedUserSessions(completedData);
   };
 
   useEffect(() => {
@@ -49,8 +51,9 @@ function SessionContextProvider({ children }) {
   return (
     <SessionContext.Provider
       value={{
-        sessions,
         userSessions,
+        upcomingUserSessions,
+        completedUserSessions,
       }}
     >
       {children}
