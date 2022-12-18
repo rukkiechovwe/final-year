@@ -2,11 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Typography, Grid } from "@mui/material";
 import CounselorSummary from "../../components/common/counselorSummary";
-import useAdmin from "../../utils/hooks/useUsers";
+import useStudents from "../../utils/hooks/useStudents";
+import useCounselors from "../../utils/hooks/useCounselors";
 
 const AdminCounselors = () => {
   const navigate = useNavigate();
-  const { counselors } = useAdmin();
+  const { counselors } = useCounselors();
   return (
     <>
       <Typography variant="h4" sx={{ mb: 5 }}>

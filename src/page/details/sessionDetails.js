@@ -142,7 +142,7 @@ export default function SessionDetails() {
               <Stack direction="row">
                 <Typography variant="h5">Session Venue:</Typography>
                 <Typography variant="h5" sx={{ ml: 2, fontWeight: 400 }}>
-                  Uniben Center
+                  {session.sessionLocation}
                 </Typography>
               </Stack>
             </Grid>

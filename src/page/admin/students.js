@@ -1,10 +1,10 @@
 import { Typography } from "@mui/material";
 import React from "react";
 import StudentTable from "../../components/studentTable";
-import useAdmin from "../../utils/hooks/useUsers";
+import useStudents from "../../utils/hooks/useStudents";
 
 const AdminStudents = () => {
-  const { students } = useAdmin();
+  const { students } = useStudents();
   return (
     <>
       <Typography variant="h4" sx={{ mb: 5 }}>

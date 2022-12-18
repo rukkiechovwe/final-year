@@ -27,25 +27,53 @@ import {
   FormHelperText,
 } from "@mui/material";
 import FormDialog from "./dialog";
-import useCounselor from "../utils/hooks/useCounselor";
+import useCounselors from "../utils/hooks/useCounselors";
 import useAuth from "../utils/hooks/useAuth";
 import { db } from "../firebase";
 import CircularLoader from "../components/circularLoader";
 
 export default function BookSession({ openSessionModal, handleCloseSession }) {
   const { user } = useAuth();
-  const { counselors } = useCounselor();
+  const { counselors } = useCounselors();
   const [isCounselorLoading, setIsCounselorLoading] = useState(false);
   const [isTimeLoading, setIsTimeLoading] = useState(false);
   const [counselorId, setCounselorId] = useState("");
+  const [daysAvailable, setDaysAvailable] = useState([]);
+  const [daysAvailableText, setDaysAvailableText] = useState([]);
   const [timeAvailable, setTimeAvailable] = useState([]);
   const [datevalue, setDateValue] = useState("");
+  const [dateErr, setDateErr] = useState("");
 
   const fetchCounselor = async (id) => {
     const docRef = doc(db, "users", id);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
+      let daysNum = [];
+      docSnap.data().availableDays.forEach((day) => {
+        switch (day) {
+          case "Mon":
+            daysNum.push(1);
+            break;
+          case "Tue":
+            daysNum.push(2);
+            break;
+          case "Wed":
+            daysNum.push(3);
+            break;
+          case "Thurs":
+            daysNum.push(4);
+            break;
+          case "Fri":
+            daysNum.push(5);
+            break;
+
+          default:
+            break;
+        }
+      });
+      setDaysAvailable(daysNum);
+      setDaysAvailableText(docSnap.data().availableDays);
       setTimeAvailable(docSnap.data().availableTime);
       setIsCounselorLoading(false);
     } else {
@@ -67,12 +95,9 @@ export default function BookSession({ openSessionModal, handleCloseSession }) {
       takenTimeSlot.push(doc.data().sessionTime);
     });
 
-    console.log(takenTimeSlot);
-
     const timeSlotLeft = timeAvailable.filter(
       (e) => !takenTimeSlot.includes(e)
     );
-    console.log(timeSlotLeft);
     setTimeAvailable(timeSlotLeft);
     setIsTimeLoading(false);
   };
@@ -87,29 +112,36 @@ export default function BookSession({ openSessionModal, handleCloseSession }) {
   }, [counselorId]);
 
   useEffect(() => {
-    if (datevalue) {
+    if (datevalue && !Boolean(dateErr)) {
       setIsTimeLoading(true);
       fetchTimeSlot(counselorId, datevalue);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [datevalue]);
+  }, [datevalue, dateErr]);
+
+  const handleDate = (value) => {
+    setDateErr("");
+    let d = new Date(dayjs(value.toString())).getDay();
+    if (d === 0 || d === 6 || !daysAvailable.includes(d)) {
+      setDateErr("The counselor is not available on this selected day");
+    }
+    setDateValue(value);
+  };
 
   return (
     <Formik
       initialValues={{
         time: "",
-        day: "",
         type: "",
       }}
       validationSchema={Yup.object().shape({
-        // time: Yup.string().required("session time is required"),
-        // day: Yup.string().required("session day is required"),
+        time: Yup.string().required("session time is required"),
         type: Yup.string().required("session type is required"),
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         setSubmitting(true);
-        const counselorData = {
+        let counselorData = {
           sessionType: values.type,
           sessionTime: values.time,
           sessionDay: dayjs(datevalue.toString()).format("DD/MM/YYYY"),
@@ -117,8 +149,20 @@ export default function BookSession({ openSessionModal, handleCloseSession }) {
           studentId: user.id,
           sessionStatus: "upcoming",
           sessionId: "",
+          sessionLocation: "",
         };
-        console.log(counselorData);
+        if (values.type === "online") {
+          // get google meet link
+          counselorData = {
+            ...counselorData,
+            sessionLocation: "",
+          };
+        } else {
+          counselorData = {
+            ...counselorData,
+            sessionLocation: "Uniben Center",
+          };
+        }
         const docRef = await addDoc(collection(db, "sessions"), counselorData);
 
         // update session with the session id
@@ -126,14 +170,6 @@ export default function BookSession({ openSessionModal, handleCloseSession }) {
         await updateDoc(updateSession, {
           sessionId: docRef.id,
         });
-
-        // // remove the time from counselors list of available time
-        // let time = timeAvailable;
-        // let filteredTime = time.filter((e) => e !== values.time);
-        // const updateCounselor = doc(db, "users", counselorId);
-        // await updateDoc(updateCounselor, {
-        //   availableTime: filteredTime,
-        // });
 
         setStatus({ success: true });
         setErrors({});
@@ -187,12 +223,27 @@ export default function BookSession({ openSessionModal, handleCloseSession }) {
                       <DatePicker
                         label="select a session day"
                         value={datevalue}
-                        onBlur={handleBlur}
-                        onChange={(newValue) => {
-                          setDateValue(newValue);
-                        }}
-                        renderInput={(params) => <TextField {...params} />}
+                        onChange={(newValue) => handleDate(newValue)}
+                        renderInput={(params) => (
+                          <TextField {...params} error={Boolean(dateErr)} />
+                        )}
+                        disablePast
                       />
+                      <FormHelperText sx={{ m: "0 !important", mt: "15px" }}>
+                        Days available:{" "}
+                        {daysAvailableText.length > 0
+                          ? daysAvailableText.join(" ,")
+                          : "counselor is not available"}
+                      </FormHelperText>
+
+                      {dateErr && (
+                        <FormHelperText
+                          error
+                          sx={{ m: "0 !important", mt: "10px" }}
+                        >
+                          {dateErr}
+                        </FormHelperText>
+                      )}
                     </Stack>
                   </LocalizationProvider>
                 </>
@@ -204,33 +255,35 @@ export default function BookSession({ openSessionModal, handleCloseSession }) {
             ) : isTimeLoading ? (
               <CircularLoader />
             ) : (
-              <FormControl fullWidth sx={{ mt: "1rem" }}>
-                <InputLabel id="session-time">Session Time</InputLabel>
-                <Select
-                  labelId="session-time"
-                  id="time"
-                  name="time"
-                  label="select session time"
-                  value={values.time}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  error={Boolean(touched.time && errors.time)}
-                >
-                  {timeAvailable.map((item) => (
-                    <MenuItem key={item} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {touched.time && errors.time && (
-                  <FormHelperText
-                    error
-                    id="standard-weight-helper-text-time-session"
+              !Boolean(dateErr) && (
+                <FormControl fullWidth sx={{ mt: "1rem" }}>
+                  <InputLabel id="session-time">Session Time</InputLabel>
+                  <Select
+                    labelId="session-time"
+                    id="time"
+                    name="time"
+                    label="select session time"
+                    value={values.time}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={Boolean(touched.time && errors.time)}
                   >
-                    {errors.time}
-                  </FormHelperText>
-                )}
-              </FormControl>
+                    {timeAvailable.map((item) => (
+                      <MenuItem key={item} value={item}>
+                        {item}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {touched.time && errors.time && (
+                    <FormHelperText
+                      error
+                      sx={{ m: "0 !important", mt: "10px" }}
+                    >
+                      {errors.time}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              )
             )}
 
             <FormControl fullWidth sx={{ mt: "1rem" }}>
@@ -245,14 +298,11 @@ export default function BookSession({ openSessionModal, handleCloseSession }) {
                 onChange={handleChange}
                 error={Boolean(touched.type && errors.type)}
               >
-                {/* <MenuItem value="online">Online</MenuItem> */}
+                <MenuItem value="online">Online</MenuItem>
                 <MenuItem value="physical">Physical</MenuItem>
               </Select>
               {touched.type && errors.type && (
-                <FormHelperText
-                  error
-                  id="standard-weight-helper-text-type-session"
-                >
+                <FormHelperText error sx={{ m: "0 !important", mt: "10px" }}>
                   {errors.type}
                 </FormHelperText>
               )}

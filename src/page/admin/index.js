@@ -1,10 +1,14 @@
 import React from "react";
 import { Grid, Container, Typography } from "@mui/material";
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import AppWidgetSummary from "../../components/common/appSummary";
-import useUsers from "../../utils/hooks/useUsers"
+import useStudents from "../../utils/hooks/useStudents";
+import useCounselors from "../../utils/hooks/useCounselors";
 
 const AdminHome = () => {
-  const {counselors,students} = useUsers()
+  const { students } = useStudents();
+  const { counselors } = useCounselors();
+
   return (
     <>
       <Container maxWidth="xl">
@@ -13,23 +17,22 @@ const AdminHome = () => {
         </Typography>
 
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} >
+          <Grid item xs={12} sm={6}>
             <AppWidgetSummary
               title="Students"
               total={students.length}
-              icon={"ant-design:android-filled"}
+              icon={<GroupOutlinedIcon />}
             />
           </Grid>
 
-          <Grid item xs={12} sm={6} >
+          <Grid item xs={12} sm={6}>
             <AppWidgetSummary
               title="Counselors"
               total={counselors.length}
               color="info"
-              icon={"ant-design:apple-filled"}
+              icon={<GroupOutlinedIcon />}
             />
           </Grid>
-
         </Grid>
 
         {/* <Typography variant="h4" sx={{ mb: 5 }}>

@@ -18,7 +18,7 @@ import {
   FormHelperText,
 } from "@mui/material";
 import FormDialog from "./dialog";
-import useCounselor from "../utils/hooks/useCounselor";
+import useCounselors from "../utils/hooks/useCounselor";
 import useAuth from "../utils/hooks/useAuth";
 import { db } from "../firebase";
 
@@ -30,7 +30,7 @@ import { db } from "../firebase";
 */
 export default function BookSession({ openSessionModal, handleCloseSession }) {
   const { user } = useAuth();
-  const { counselors } = useCounselor();
+  const { counselors } = useCounselors();
   const [loadingAvailability, setLoadingAvailability] = useState(false);
   const [counselorId, setCounselorId] = useState("");
   const [daysAvailable, setDaysAvailable] = useState([]);

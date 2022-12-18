@@ -1,10 +1,10 @@
 ____TODO____
-+ Book Online Session
-+ Fix date picker
-+ Integrate google meet
-+ Session Questionnaire
++ Book Online Session and Integrate anonymouse status
 + Show snackbars
 + Clean code
++ Integrate google meet
++ Session Questionnaire
+
 
 
 ____DONE____

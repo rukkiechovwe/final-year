@@ -31,7 +31,7 @@ import AdminCounselorDetails from "../page/admin/counselorDetails";
 
 // OTHERS
 import useAuth from "../utils/hooks/useAuth";
-import AdminContextProvider from "../context/adminContext";
+import StudentsContextProvider from "../context/stuentsContext";
 import CounselorsContextProvider from "../context/counselorsContext";
 import SessionContextProvider from "../context/sessionContext";
 import SessionDetails from "../page/details/sessionDetails";
@@ -60,9 +60,11 @@ const getRouteBasedOnUserRole = (userRole) => {
         path: "/",
         element: (
           <AuthGuard>
-            <AdminContextProvider>
-              <DashboardLayout />
-            </AdminContextProvider>
+            <StudentsContextProvider>
+              <CounselorsContextProvider>
+                <DashboardLayout />
+              </CounselorsContextProvider>
+            </StudentsContextProvider>
           </AuthGuard>
         ),
         children: [

@@ -7,6 +7,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import Detail from "../../components/details";
+import CircularLoader from "../../components/circularLoader";
 
 export default function AdminCounselorDetails() {
   const params = useParams();
@@ -47,7 +48,7 @@ export default function AdminCounselorDetails() {
         active={`/counselor-detail/${params.id}`}
       >
         {loading ? (
-          <CircularProgress color="secondary" />
+          <CircularLoader />
         ) : (
           <>
             <Grid item xs={12}>
@@ -81,15 +82,15 @@ export default function AdminCounselorDetails() {
               <Stack direction="row">
                 <Typography variant="h5">Days Available:</Typography>
                 <Typography variant="h5" sx={{ ml: 2, fontWeight: 400 }}>
-                  Mon, Tue, Wed, Thur, Fri
+                  {user?.availableDays?.join(" ,")}
                 </Typography>
               </Stack>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} >
               <Stack direction="row">
-                <Typography variant="h5">Time Available:</Typography>
+                <Typography variant="h5" noWrap>Time Available:</Typography>
                 <Typography variant="h5" sx={{ ml: 2, fontWeight: 400 }}>
-                  9am - 4pm
+                  {user?.availableTime?.join(" ,")}
                 </Typography>
               </Stack>
             </Grid>

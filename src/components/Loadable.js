@@ -13,19 +13,19 @@ const LoaderWrapper = styled("div")(({ theme }) => ({
   },
 }));
 
-const Loader = () => (
+const Loadable = () => (
   <LoaderWrapper>
     <LinearProgress color="primary" />
   </LoaderWrapper>
 );
 
-const Loadable =
-  ({ Component }) =>
-  (props) =>
-    (
-      <Suspense fallback={<Loader />}>
-        <Component {...props} />
-      </Suspense>
-    );
+// const Loadable =
+//   ({ Component }) =>
+//   (props) =>
+//     (
+//       <Suspense fallback={<Loader />}>
+//         <Component {...props} />
+//       </Suspense>
+//     );
 
 export default Loadable;

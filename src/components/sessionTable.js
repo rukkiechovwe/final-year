@@ -59,37 +59,30 @@ const headCells = [
   {
     id: "sessionId",
     label: "Session Id",
-    role: 0,
   },
-  {
-    id: "name",
-    label: "Student Name",
-    role: 2,
-  },
-  {
-    id: "name",
-    label: "Counselor Name",
-    role: 3,
-  },
+  // {
+  //   id: "name",
+  //   label: "Student Name",
+  // },
+  // {
+  //   id: "name",
+  //   label: "Counselor Name",
+  // },
   {
     id: "type",
     label: "Session Type",
-    role: 0,
   },
   {
     id: "date",
     label: "Session Date",
-    role: 0,
   },
   {
     id: "time",
     label: "Session Time",
-    role: 0,
   },
   {
     id: "status",
     label: "Status",
-    role: 0,
   },
   // {
   //   id: "location",
@@ -101,19 +94,16 @@ function SessionTableHead({ session, orderBy, userRole }) {
   return (
     <TableHead>
       <TableRow>
-        {headCells.map(
-          (headCell) =>
-            (headCell.role === userRole || headCell.role === 0) && (
-              <TableCell
-                key={headCell.id}
-                align="left"
-                padding="normal"
-                sortDirection={orderBy === headCell.id ? session : false}
-              >
-                {headCell.label}
-              </TableCell>
-            )
-        )}
+        {headCells.map((headCell) => (
+          <TableCell
+            key={headCell.id}
+            align="left"
+            padding="normal"
+            sortDirection={orderBy === headCell.id ? session : false}
+          >
+            {headCell.label}
+          </TableCell>
+        ))}
       </TableRow>
     </TableHead>
   );
@@ -214,9 +204,9 @@ export default function SessionTable({ sessions, userRole }) {
                     </Link>
                   </TableCell>
                   {/* <TableCell align="left">{row.studentId}</TableCell> */}
-                  <TableCell align="left">
+                  {/* <TableCell align="left">
                     {userRole === 3 ? row.counselorId : row.studentId}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell align="left">{row.sessionType}</TableCell>
                   <TableCell align="left">{row.sessionDay}</TableCell>
 
