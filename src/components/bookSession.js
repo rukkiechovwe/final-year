@@ -147,7 +147,7 @@ export default function BookSession({ openSessionModal, handleCloseSession }) {
           sessionDay: dayjs(datevalue.toString()).format("DD/MM/YYYY"),
           counselorId: counselorId,
           studentId: user.id,
-          sessionStatus: "upcoming",
+          sessionStatus: "pending",
           sessionId: "",
           sessionLocation: "",
         };

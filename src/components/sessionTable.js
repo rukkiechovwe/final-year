@@ -115,7 +115,7 @@ const SessionStatus = ({ status }) => {
 
   switch (status) {
     case 0:
-      color = "warning";
+      color = "primary";
       title = "Upcoming";
       break;
     case 1:
@@ -127,8 +127,8 @@ const SessionStatus = ({ status }) => {
       title = "Rejected";
       break;
     default:
-      color = "primary";
-      title = "None";
+      color = "warning";
+      title = "Pending";
   }
 
   return (
@@ -214,7 +214,15 @@ export default function SessionTable({ sessions, userRole }) {
 
                   <TableCell align="left">
                     <SessionStatus
-                      status={row.sessionStatus === "upcoming" ? 0 : 1}
+                      status={
+                        row.sessionStatus === "upcoming"
+                          ? 0
+                          : row.sessionStatus === "completed"
+                          ? 1
+                          : row.sessionStatus === "rejected"
+                          ? 2
+                          : null
+                      }
                     />
                   </TableCell>
                   {/* <TableCell align="right">Uniben Center</TableCell> */}

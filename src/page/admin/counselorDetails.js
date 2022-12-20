@@ -2,7 +2,6 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Avatar, Grid, Stack, Typography } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
 
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";

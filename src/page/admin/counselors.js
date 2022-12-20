@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Typography, Grid } from "@mui/material";
 import CounselorSummary from "../../components/common/counselorSummary";
-import useStudents from "../../utils/hooks/useStudents";
 import useCounselors from "../../utils/hooks/useCounselors";
 
 const AdminCounselors = () => {

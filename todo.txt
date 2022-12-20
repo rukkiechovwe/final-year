@@ -1,17 +1,10 @@
 ____TODO____
-+ Book Online Session and Integrate anonymouse status
-+ Show snackbars
++ Integrate anonymous status
++ Book session Questionnaire
 + Clean code
-+ Integrate google meet
-+ Session Questionnaire
 
 
 
 ____DONE____
-
-
-
-
-____BUGS____
-+ when a counselor updates profile the first time, counselor date and time available, image...
-...should show on the profile
++ Book Online Session 
++ Accept, reject and set completed status

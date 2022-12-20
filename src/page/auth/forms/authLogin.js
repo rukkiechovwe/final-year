@@ -35,8 +35,6 @@ const AuthLogin = () => {
         setStatus({ success: true });
         const user = userCredential.user;
         localStorage.setItem("token", user.uid);
-
-        //   navigate to home page
         getUser(user.uid);
       })
       .catch((error) => {
