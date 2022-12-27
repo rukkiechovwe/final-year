@@ -1,5 +1,5 @@
 ____TODO____
-+ Integrate anonymous status
++ Integrate anonymous status when booking sessions
 + Book session Questionnaire
 + Clean code
 
@@ -8,3 +8,4 @@ ____TODO____
 ____DONE____
 + Book Online Session 
 + Accept, reject and set completed status
++ Live chat

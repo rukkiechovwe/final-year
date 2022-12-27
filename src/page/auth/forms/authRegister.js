@@ -88,7 +88,7 @@ const AuthRegister = () => {
           email: "",
           department: "",
           password: "",
-          gender:"female",
+          gender: "female",
           submit: null,
         }}
         validationSchema={Yup.object().shape({
@@ -241,6 +241,11 @@ const AuthRegister = () => {
                     placeholder="******"
                     inputProps={{}}
                   />
+                  <FormHelperText>
+                    Use special characters, uppercase letters, and numbers. The
+                    password strength indicator below will tell you if your
+                    password is sufficiently strong.
+                  </FormHelperText>
                   {touched.password && errors.password && (
                     <FormHelperText error id="helper-text-password-signup">
                       {errors.password}

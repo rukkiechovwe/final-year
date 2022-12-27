@@ -54,7 +54,7 @@ const AuthLogin = () => {
         }}
         validationSchema={Yup.object().shape({
           email: Yup.string()
-            .email("Must be a valid email")
+            .email("Must be a valid school email")
             .max(255)
             .required("Email is required"),
           password: Yup.string().max(255).required("Password is required"),
@@ -76,7 +76,7 @@ const AuthLogin = () => {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="email-login">Email Address</InputLabel>
+                  <InputLabel htmlFor="email-login">School Email Address</InputLabel>
                   <OutlinedInput
                     id="email-login"
                     type="email"
@@ -84,7 +84,7 @@ const AuthLogin = () => {
                     name="email"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="Enter email address"
+                    placeholder="Enter school email address"
                     fullWidth
                     error={Boolean(touched.email && errors.email)}
                   />
