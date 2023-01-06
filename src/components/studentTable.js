@@ -9,28 +9,6 @@ import {
   TableRow,
 } from "@mui/material";
 
-// function createData(name, email, department, gender) {
-//   return { name, email, department, gender };
-// }
-
-// const rows = [
-//   createData("Rukkie Oghenechovwe", "rukkiechowe@gmail.com", "CSC", "Female"),
-//   createData("Ufuoma Oghenechovwe", "rukkiechowe@gmail.com", "CSC", "Female"),
-//   createData("Ufuoma Oghenechovwe", "rukkiechowe@gmail.com", "CSC", "Female"),
-//   createData("Ufuoma Oghenechovwe", "rukkiechowe@gmail.com", "CSC", "Female"),
-//   createData("Ufuoma Oghenechovwe", "rukkiechowe@gmail.com", "CSC", "Female"),
-//   createData("Ufuoma Oghenechovwe", "rukkiechowe@gmail.com", "CSC", "Female"),
-//   createData("Ufuoma Oghenechovwe", "rukkiechowe@gmail.com", "CSC", "Female"),
-//   createData("Ufuoma Oghenechovwe", "rukkiechowe@gmail.com", "CSC", "Female"),
-//   createData("Ufuoma Oghenechovwe", "rukkiechowe@gmail.com", "CSC", "Female"),
-//   createData(
-//     "Constance Oghenechovwe",
-//     "rukkiechowe@gmail.com",
-//     "CSC",
-//     "Female"
-//   ),
-// ];
-
 function stableSort(array) {
   array.sort((a, b) => {
     return b - a;
